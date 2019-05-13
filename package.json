@@ -9,9 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "fast-xml-parser": "^3.12.16",
+    "js-sha512": "^0.8.0",
     "mkdirp": "^0.5.1",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4"
+    "request-promise": "^4.2.4",
+    "rimraf": "^2.6.3",
+    "unzipper": "^0.9.11"
   }
 }
