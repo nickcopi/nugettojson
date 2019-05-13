@@ -12,8 +12,8 @@ export default class Package extends Component {
 		let version = this.props.version;
 		return (
 			<div className = 'package'>
-			Name: {name}
-			Version: {version}
+			<div className = 'nameHeader'>{name}</div>
+			<div className = 'versionHeader'>Version: {version} </div>
 			<a className = 'downloadBtn' href={`/packages/${name}_${version}/${name}_${version}.nupkg`}>Download</a>
 			</div>
 		);

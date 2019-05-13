@@ -5,7 +5,6 @@ import PackageList from './PackageList';
 function App() {
   return (
     <div className="App">
-	  OH YEAH
 	  <PackageList/>
     </div>
   );

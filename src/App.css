@@ -1,4 +1,33 @@
 .App {
   text-align: center;
+  display:flex;
+  justify-content:center;
+  color: #2D3B33;
 }
-
+.package{
+	border-style:solid;
+	border-radius:10px;
+	background-color: #ADE0C5;
+	border-color: #C0FADB;
+	width:95%;
+	padding:10px;
+}
+.nameHeader{
+	font-size:30px;
+}
+.versionHeader{
+	font-size:8px;
+	padding:10px;
+	padding-top:0px;
+}
+.downloadBtn{
+	text-decoration:none;
+  	color: #2D3B33;
+	border-style:solid;
+	border-radius:5px;
+	border-color: #8FBAA3;
+	padding:3px;
+}
+.downloadBtn:hover{
+	background-color: #8FBAA3;
+}
