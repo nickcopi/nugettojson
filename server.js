@@ -12,6 +12,6 @@ app.get('/listPackages', (req,res)=>{
 });
 
 api.updateAll();
-app.listen(PORT,()=>{
+app.listen(PORT,'127.0.0.1',()=>{
 	console.error(`Listening on port ${PORT}.`);
 });
