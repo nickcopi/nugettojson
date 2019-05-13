@@ -20,6 +20,11 @@ let getData = async () =>{
 	);
 
 	fs.writeFileSync('output.json',JSON.stringify(data,null,2));
+	return data.feed.entry;
 
 }
-console.log(Promise.resolve(getData()));
+getData().then(res=>{
+	console.log(res.map(r=>r.title).filter((r,i,arr)=>arr.indexOf(r) === i));
+}).catch(e=>{
+	console.error(e);
+});
