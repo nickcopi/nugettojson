@@ -5,8 +5,6 @@ const fs = require('fs');
 const AdmZip = require('adm-zip');
 const rimraf = require('rimraf');
 
-let fullData;
-
 let getData = async () =>{
 	let data = await request('https://choco.lcc.ts.vcu.edu/nuget/LCC/Packages');
 	data = parser.parse(data);
@@ -26,23 +24,11 @@ let getData = async () =>{
 	const outputFileName = 'output.json';
 	const oldData = fs.existsSync(outputFileName)?JSON.parse(fs.readFileSync(outputFileName).toString('utf-8')):null;
 	fs.writeFileSync(outputFileName,JSON.stringify(data.feed.entry,null,2));
-	fullData = data.feed.entry;
 	return {
 		oldData,
 		newData: data.feed.entry
 	}
 
-}
-
-let listPackages = ()=>{
-	let newList = [];
-	fullData.forEach(d=>{
-		newList.push({
-			name: d.title,
-			version: d.properties.Version
-		});
-	});
-	return newList;
 }
 
 let fetchPackage = async (name,version)=>{
@@ -62,6 +48,7 @@ let fetchPackage = async (name,version)=>{
 	(new AdmZip(data)).extractAllTo(outputPath,true);
 	debugger;
 }
+
 
 
 
@@ -92,6 +79,5 @@ let updateAll = ()=>{
 
 module.exports = {
 	updateAll,
-	fetchPackage,
-	listPackages
+	fetchPackage
 }
