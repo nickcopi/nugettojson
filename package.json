@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.4.13",
+    "express": "^4.16.4",
     "fast-xml-parser": "^3.12.16",
     "js-sha512": "^0.8.0",
     "mkdirp": "^0.5.1",
