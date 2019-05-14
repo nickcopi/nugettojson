@@ -6,6 +6,7 @@ export default class Package extends Component {
 		super(props);
 		this.buildRequest = this.buildRequest.bind(this);
 		this.fetchRequest = this.fetchRequest.bind(this);
+		this.updateRequest = this.updateRequest.bind(this);
 		this.updateCode = this.updateCode.bind(this);
 
 	}
@@ -72,6 +73,36 @@ export default class Package extends Component {
 		});
 
 	}
+	updateRequest(e){
+		const element = e.target;
+		const buildStatus = element.parentElement.children[3];
+		element.innerText = 'Updating...';
+		fetch('/updatePackage',{
+			method: 'POST',
+			headers:{
+				'Content-Type': 'application/json'
+			},
+			body:JSON.stringify({
+				name: this.props.name,
+				version:this.props.version
+
+			})
+		}).then(res=>res.json()).then(res=>{
+			console.log(res);
+			if(res.success){
+				element.innerText = 'Success!';
+				setTimeout(()=>{element.innerText = 'Update'},500);
+			} else {
+				element.innerText = 'Failure!';
+				setTimeout(()=>{element.innerText = 'Update'},500);
+				buildStatus.innerText = res.result;
+			}
+		}).catch(e=>{
+			element.innerText = 'Update';
+			console.error(e)
+		});
+
+	}
 
 
 	render(){
@@ -89,6 +120,8 @@ export default class Package extends Component {
 			<span className = 'downloadBtn' onClick = {this.buildRequest}>Build</span>
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
+			&nbsp;
+			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update</span>
 			</div>
 		);
 	}
@@ -103,7 +136,6 @@ export default class Package extends Component {
 					this.setState({code:'Failed to load code'});
 				} else {
 					res.text().then(data=>{
-						console.log(data)
 						this.setState({code:data});
 					}).catch(e=>{
 						this.setState({code:e.toString()});

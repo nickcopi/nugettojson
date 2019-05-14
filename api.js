@@ -60,6 +60,27 @@ let buildPackage = async (name, version)=>{
 
 }
 
+let updatePackage = async (name, version)=>{
+	const path = `${__dirname}/packages/${name}.${version}/`;
+	const updaterName = `${name}.${version}-updater.js`;
+	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
+	try{
+		const ps = new Shell({
+			executionPolicy: 'Bypass',
+			noProfile:true
+
+		});
+		ps.addCommand(`cd ${path}`);
+		ps.addCommand(`node ${updaterName}`);
+		const result = await ps.invoke();
+		return {success:true,result};
+	}catch(e){
+		return {success:false,result:e.toString()};
+		console.error(e);
+	}
+
+}
+
 let listPackages = ()=>{
 	let newList = [];
 	fullData.forEach(d=>{
@@ -102,7 +123,7 @@ let fetchPackage = async (name,version)=>{
 
 
 
-let updateAll = ()=>{ 
+let fetchAll = ()=>{ 
 	getData().then(res=>{
 		let newData = res.newData;
 		let oldData = res.oldData;
@@ -128,8 +149,9 @@ let updateAll = ()=>{
 }
 
 module.exports = {
-	updateAll,
+	fetchAll,
 	fetchPackage,
+	updatePackage,
 	forceFetchPackage,
 	listPackages,
 	buildPackage
