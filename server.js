@@ -6,7 +6,7 @@ const PORT = 8080;
 
 app.use(bodyParser.json());
 app.use('/packages',express.static(`${__dirname}/packages`));
-app.use('/',express.static(`${__dirname}/build`));
+app.use('/',express.static(`${__dirname}/dist`));
 
 app.get('/listPackages', (req,res)=>{
 	res.send(api.listPackages());
