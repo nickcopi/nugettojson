@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import MonacoEditor from 'react-monaco-editor';
 
 export default class Package extends Component {
 	state = {code:null};
@@ -80,13 +79,7 @@ export default class Package extends Component {
 			<div className = 'package'>
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
-			<MonacoEditor
-			width="800"
-			height="600"
-			language="javascript"
-			theme="vs-dark"
-			value={code}
-			/>
+			<code>{code}</code>
 			<div className = 'buildStatus'></div>
 			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
