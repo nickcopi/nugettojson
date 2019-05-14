@@ -9,7 +9,7 @@
 	border-radius:10px;
 	background-color: #ADE0C5;
 	border-color: #C0FADB;
-	width:95%;
+	width:60%;
 	padding:10px;
 }
 .nameHeader{
@@ -20,6 +20,9 @@
 	padding:10px;
 	padding-top:0px;
 }
+.packageList{
+	width:100%;
+}
 .downloadBtn{
 	text-decoration:none;
   	color: #2D3B33;
@@ -27,6 +30,11 @@
 	border-radius:5px;
 	border-color: #8FBAA3;
 	padding:3px;
+	cursor:pointer;
+}
+.buildStatus{
+	padding-bottom:10px;
+
 }
 .downloadBtn:hover{
 	background-color: #8FBAA3;

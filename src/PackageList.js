@@ -7,9 +7,9 @@ export default class PackageView extends Component {
 		let packages = this.state.packages;
 		let data = packages?this.loadPackages(packages):'Loading';
 		return (
-			<div>
+			<center className = 'packageList'>
 			{data}
-			</div>
+			</center>
 		);
 	}
 	componentDidMount(){

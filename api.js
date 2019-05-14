@@ -37,17 +37,25 @@ let getData = async () =>{
 
 let buildPackage = async (name, version)=>{
 	const path = `${__dirname}/packages/${name}.${version}/output`;
-	if(!fs.existsSync(path)) return {Success:false};
+	const oldPackagePath = `${__dirname}/packages/${name}.${version}/${name}.${version}.nupkg`;
+	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
 	try{
 		const ps = new Shell({
 			executionPolicy: 'Bypass',
 			noProfile:true
 
 		});
-		//ps.addCommand(`cd ${path} && ch 
+		ps.addCommand(`cd ${path}`);
+		ps.addCommand('choco pack');
+		ps.addCommand('Move-Item -Force *.nupkg ..');
+		if(fs.existsSync(oldPackagePath)) fs.renameSync(oldPackagePath, oldPackagePath + '.old');
+		const result = await ps.invoke();
+		const success = fs.existsSync(oldPackagePath);
+		if(!success && fs.existsSync(oldPackagePath + '.old')) fs.renameSync(oldPackagePath + '.old', oldPackagePath);
+		return {success,result};
 	}catch(e){
+		return {success:false,result:e.toString()};
 		console.error(e);
-		return {Success:false};
 	}
 
 }
@@ -112,5 +120,6 @@ let updateAll = ()=>{
 module.exports = {
 	updateAll,
 	fetchPackage,
-	listPackages
+	listPackages,
+	buildPackage
 }
