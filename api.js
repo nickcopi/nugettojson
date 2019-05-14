@@ -86,6 +86,7 @@ let fetchPackage = async (name,version)=>{
 	const outputPath = path + '/output';
 	const zipPath = `${path}/${pkgName}.nupkg`;
 	mkdirp.sync(path);
+	fs.copyFileSync('./template.js', `${path}/${pkgName}-updater.js`);
 	rimraf.sync(outputPath);
 	mkdirp.sync(outputPath);
 	const options = {

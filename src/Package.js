@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import MonacoEditor from 'react-monaco-editor';
 
 export default class Package extends Component {
-	state = {packages:null};
+	state = {code:null};
 	constructor(props){
 		super(props);
 		this.buildRequest = this.buildRequest.bind(this);
@@ -43,7 +44,7 @@ export default class Package extends Component {
 	}
 	buildRequest(e){
 		const element = e.target;
-		const buildStatus = element.parentElement.children[2];
+		const buildStatus = element.parentElement.children[3];
 		element.innerText = 'Building...';
 		fetch('/buildPackage',{
 			method: 'POST',
@@ -74,10 +75,18 @@ export default class Package extends Component {
 	render(){
 		let name = this.props.name;
 		let version = this.props.version;
+		let code = this.state.code?this.state.code:'Loading...';
 		return (
 			<div className = 'package'>
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
+			<MonacoEditor
+			width="800"
+			height="600"
+			language="javascript"
+			theme="vs-dark"
+			value={code}
+			/>
 			<div className = 'buildStatus'></div>
 			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
@@ -87,7 +96,27 @@ export default class Package extends Component {
 			</div>
 		);
 	}
+	getCode(){
+		let pkgName = `${this.props.name}.${this.props.version}`;
+		fetch(`/packages/${pkgName}/${pkgName}-updater.js`)
+			.then(res=>{
+				if(!res.status === 200){
+					this.setState({code:'Failed to load code'});
+				} else {
+					res.text().then(data=>{
+						console.log(data)
+						this.setState({code:data});
+					}).catch(e=>{
+						this.setState({code:e.toString()});
+					});
+				}
+			})
+			.catch((err)=>{
+				console.log(err);
+			});
+	}
 	componentDidMount(){
+		this.getCode();
 	}
 }
 
