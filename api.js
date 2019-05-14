@@ -71,6 +71,15 @@ let listPackages = ()=>{
 	return newList;
 }
 
+let forceFetchPackage = async(name, version)=>{
+	const path = `${__dirname}/packages/${name}.${version}/`;
+	if(!fs.existsSync(path)) return {success:false};
+	console.log(`Fetching ${name} version ${version}.`);
+	await fetchPackage(name,version);
+	return {success:true};
+	
+}
+
 let fetchPackage = async (name,version)=>{
 	const pkgName = `${name}.${version}`; 
 	const path = `packages/${pkgName}`;
@@ -105,7 +114,7 @@ let updateAll = ()=>{
 			let oldVersion = oldData.find(o=>o.title === name && o.properties.Version === version);
 			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash;
 			if(!localExists || hashDiffers){
-				console.log(`Grabbing ${name} version ${version}.`);
+				console.log(`Fetching ${name} version ${version}.`);
 				fetchPackage(name,version);
 			}
 			debugger;
@@ -120,6 +129,7 @@ let updateAll = ()=>{
 module.exports = {
 	updateAll,
 	fetchPackage,
+	forceFetchPackage,
 	listPackages,
 	buildPackage
 }

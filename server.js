@@ -22,6 +22,15 @@ app.post('/buildPackage', async (req,res)=>{
 	}
 
 });
+app.post('/fetchPackage', async (req,res)=>{
+	
+	if(req.body.name && req.body.version){
+		res.send(await api.forceFetchPackage(req.body.name, req.body.version));
+	} else {
+		res.send({success:false,result:'Invalid request'});
+	}
+
+});
 
 api.updateAll();
 app.listen(PORT,'127.0.0.1',()=>{

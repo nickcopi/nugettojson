@@ -5,11 +5,40 @@ export default class Package extends Component {
 	constructor(props){
 		super(props);
 		this.buildRequest = this.buildRequest.bind(this);
+		this.fetchRequest = this.fetchRequest.bind(this);
 
 	}
 	defaultProps = {
 		name:'',
 		version:''
+
+	}
+	fetchRequest(e){
+		const element = e.target;
+		element.innerText = 'Fetching...';
+		fetch('/fetchPackage',{
+			method: 'POST',
+			headers:{
+				'Content-Type': 'application/json'
+			},
+			body:JSON.stringify({
+				name: this.props.name,
+				version:this.props.version
+
+			})
+		}).then(res=>res.json()).then(res=>{
+			console.log(res);
+			if(res.success){
+				element.innerText = 'Success!';
+				setTimeout(()=>{element.innerText = 'Fetch'},500);
+			} else {
+				element.innerText = 'Failure!';
+				setTimeout(()=>{element.innerText = 'Fetch'},500);
+			}
+		}).catch(e=>{
+			element.innerText = 'Fetch';
+			console.error(e)
+		});
 
 	}
 	buildRequest(e){
@@ -53,6 +82,8 @@ export default class Package extends Component {
 			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.buildRequest}>Build</span>
+			&nbsp;
+			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
 			</div>
 		);
 	}
