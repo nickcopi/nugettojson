@@ -1,8 +1,8 @@
 .App {
-  text-align: center;
-  display:flex;
-  justify-content:center;
-  color: #2D3B33;
+	text-align: center;
+	display:flex;
+	justify-content:center;
+	color: #2D3B33;
 }
 .package{
 	border-style:solid;
@@ -23,9 +23,25 @@
 .packageList{
 	width:100%;
 }
+.codeView{
+	margin: 0px;
+	border: 0px;
+	background: none;
+	white-space: pre-wrap;
+	word-break: keep-all;
+	overflow-wrap: break-word;
+	resize: none;
+	overflow: hidden;
+	width:500px;
+	height:300px;
+	-webkit-font-smoothing: antialiased;
+	/*-webkit-text-fill-color: transparent;*/
+	padding: 10px;
+
+}
 .downloadBtn{
 	text-decoration:none;
-  	color: #2D3B33;
+	color: #2D3B33;
 	border-style:solid;
 	border-radius:5px;
 	border-color: #8FBAA3;

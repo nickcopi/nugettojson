@@ -6,6 +6,7 @@ export default class Package extends Component {
 		super(props);
 		this.buildRequest = this.buildRequest.bind(this);
 		this.fetchRequest = this.fetchRequest.bind(this);
+		this.updateCode = this.updateCode.bind(this);
 
 	}
 	defaultProps = {
@@ -71,6 +72,8 @@ export default class Package extends Component {
 		});
 
 	}
+
+
 	render(){
 		let name = this.props.name;
 		let version = this.props.version;
@@ -79,7 +82,7 @@ export default class Package extends Component {
 			<div className = 'package'>
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
-			<code>{code}</code>
+			<textarea className = 'codeView' onChange={this.updateCode} value = {code}>{code}</textarea>
 			<div className = 'buildStatus'></div>
 			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
@@ -88,6 +91,9 @@ export default class Package extends Component {
 			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
 			</div>
 		);
+	}
+	updateCode(e){
+		this.setState({code:e.target.value});
 	}
 	getCode(){
 		let pkgName = `${this.props.name}.${this.props.version}`;
