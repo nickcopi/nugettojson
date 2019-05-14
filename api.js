@@ -81,6 +81,22 @@ let updatePackage = async (name, version)=>{
 
 }
 
+
+let updateAll = async ()=>{
+	let list = listPackages();
+	return await Promise.all(list.map(async p=>{
+		const result = await updatePackage(p.name,p.version);
+		return {...p,...result};
+	}));
+}
+let buildAll = async ()=>{
+	let list = listPackages();
+	return await Promise.all(list.map(async p=>{
+		const result = await buildPackage(p.name,p.version);
+		return {...p,...result};
+	}));
+}
+
 let listPackages = ()=>{
 	let newList = [];
 	fullData.forEach(d=>{
@@ -154,5 +170,7 @@ module.exports = {
 	updatePackage,
 	forceFetchPackage,
 	listPackages,
-	buildPackage
+	buildPackage,
+	updateAll,
+	buildAll
 }

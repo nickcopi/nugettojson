@@ -13,6 +13,15 @@ app.get('/listPackages', (req,res)=>{
 
 });
 
+app.get('/updateAll', async (req,res)=>{
+	const report = await api.updateAll();
+	res.send(report);
+});
+app.get('/buildAll', async (req,res)=>{
+	const report = await api.buildAll();
+	res.send(report);
+});
+
 app.post('/buildPackage', async (req,res)=>{
 	
 	if(req.body.name && req.body.version){

@@ -1,5 +1,8 @@
+const originalDir = process.cwd();
+process.chdir('../../');
 const fs = require('fs');
-
+const request = require('request-promise');
+process.chdir(originalDir);
 const chocoPS1Path = 'output/tools/chocolateyInstall.ps1';
 const chocoPS1 = fs.readFileSync(chocoPS1Path).toString('utf-8');	
 
