@@ -4,6 +4,7 @@ const mkdirp = require('mkdirp');
 const fs = require('fs');
 const AdmZip = require('adm-zip');
 const rimraf = require('rimraf');
+const Shell = require('node-powershell');
 
 let fullData;
 
@@ -34,6 +35,23 @@ let getData = async () =>{
 
 }
 
+let buildPackage = async (name, version)=>{
+	const path = `${__dirname}/packages/${name}.${version}/output`;
+	if(!fs.existsSync(path)) return {Success:false};
+	try{
+		const ps = new Shell({
+			executionPolicy: 'Bypass',
+			noProfile:true
+
+		});
+		//ps.addCommand(`cd ${path} && ch 
+	}catch(e){
+		console.error(e);
+		return {Success:false};
+	}
+
+}
+
 let listPackages = ()=>{
 	let newList = [];
 	fullData.forEach(d=>{
@@ -46,7 +64,7 @@ let listPackages = ()=>{
 }
 
 let fetchPackage = async (name,version)=>{
-	const pkgName = `${name}_${version}`; 
+	const pkgName = `${name}.${version}`; 
 	const path = `packages/${pkgName}`;
 	const outputPath = path + '/output';
 	const zipPath = `${path}/${pkgName}.nupkg`;
@@ -60,6 +78,7 @@ let fetchPackage = async (name,version)=>{
 	let data = await request(options);
 	fs.writeFileSync(zipPath,data);
 	(new AdmZip(data)).extractAllTo(outputPath,true);
+	rimraf.sync(outputPath + '/_rels');
 	debugger;
 }
 
@@ -73,7 +92,7 @@ let updateAll = ()=>{
 		newData.forEach(d=>{
 			const name = d.title;
 			const version = d.properties.Version
-			const path = `packages/${name}_${version}`;
+			const path = `packages/${name}.${version}`;
 			let localExists = fs.existsSync(path);
 			let oldVersion = oldData.find(o=>o.title === name && o.properties.Version === version);
 			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash;

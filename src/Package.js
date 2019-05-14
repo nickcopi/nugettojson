@@ -14,7 +14,7 @@ export default class Package extends Component {
 			<div className = 'package'>
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
-			<a className = 'downloadBtn' href={`/packages/${name}_${version}/${name}_${version}.nupkg`}>Download</a>
+			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
 			</div>
 		);
 	}
