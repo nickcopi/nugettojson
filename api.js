@@ -24,6 +24,7 @@ let getData = async () =>{
 		d.properties = newObject;
 	}
 	);
+	data.feed.entry = data.feed.entry.filter(d=>d.properties.IsLatestVersion);
 	const outputFileName = 'output.json';
 	const oldData = fs.existsSync(outputFileName)?JSON.parse(fs.readFileSync(outputFileName).toString('utf-8')):null;
 	fs.writeFileSync(outputFileName,JSON.stringify(data.feed.entry,null,2));
@@ -36,8 +37,8 @@ let getData = async () =>{
 }
 
 let buildPackage = async (name, version)=>{
-	const path = `${__dirname}/packages/${name}.${version}/output`;
-	const oldPackagePath = `${__dirname}/packages/${name}.${version}/${name}.${version}.nupkg`;
+	const path = `${__dirname}/packages/${name}/output`;
+	const oldPackagePath = `${__dirname}/packages/${name}/${name}.${version}.nupkg`;
 	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
 	try{
 		const ps = new Shell({
@@ -61,8 +62,8 @@ let buildPackage = async (name, version)=>{
 }
 
 let updatePackage = async (name, version)=>{
-	const path = `${__dirname}/packages/${name}.${version}/`;
-	const updaterName = `${name}.${version}-updater.js`;
+	const path = `${__dirname}/packages/${name}/`;
+	const updaterName = `${name}-updater.js`;
 	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
 	try{
 		const ps = new Shell({
@@ -81,8 +82,8 @@ let updatePackage = async (name, version)=>{
 
 }
 let updateUpdater = async (name, version, code)=>{
-	const path = `${__dirname}/packages/${name}.${version}/`;
-	const updaterName = `${name}.${version}-updater.js`;
+	const path = `${__dirname}/packages/${name}/`;
+	const updaterName = `${name}-updater.js`;
 	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
 	fs.writeFileSync(`${path}/${updaterName}`,code)
 	// a dumb thing to assume
@@ -117,7 +118,7 @@ let listPackages = ()=>{
 }
 
 let forceFetchPackage = async(name, version)=>{
-	const path = `${__dirname}/packages/${name}.${version}/`;
+	const path = `${__dirname}/packages/${name}/`;
 	if(!fs.existsSync(path)) return {success:false};
 	console.log(`Fetching ${name} version ${version}.`);
 	await fetchPackage(name,version);
@@ -127,11 +128,11 @@ let forceFetchPackage = async(name, version)=>{
 
 let fetchPackage = async (name,version)=>{
 	const pkgName = `${name}.${version}`; 
-	const path = `packages/${pkgName}`;
+	const path = `packages/${name}`;
 	const outputPath = path + '/output';
 	const zipPath = `${path}/${pkgName}.nupkg`;
 	mkdirp.sync(path);
-	fs.copyFileSync('./template.js', `${path}/${pkgName}-updater.js`);
+	fs.copyFileSync('./template.js', `${path}/${name}-updater.js`);
 	rimraf.sync(outputPath);
 	mkdirp.sync(outputPath);
 	const options = {
@@ -154,7 +155,7 @@ let fetchAll = ()=>{
 		newData.forEach(d=>{
 			const name = d.title;
 			const version = d.properties.Version
-			const path = `packages/${name}.${version}`;
+			const path = `packages/${name}`;
 			let localExists = fs.existsSync(path);
 			let oldVersion = oldData.find(o=>o.title === name && o.properties.Version === version);
 			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash;

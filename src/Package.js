@@ -149,7 +149,7 @@ export default class Package extends Component {
 			<div className = 'versionHeader'>Version: {version} </div>
 			<textarea className = 'codeView' onChange={this.updateCode} value = {code}>{code}</textarea>
 			<div className = 'buildStatus'></div>
-			<a className = 'downloadBtn' href={`/packages/${name}.${version}/${name}.${version}.nupkg`}>Download</a>
+			<a className = 'downloadBtn' href={`/packages/${name}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.buildRequest}>Build</span>
 			&nbsp;
@@ -165,8 +165,7 @@ export default class Package extends Component {
 		this.setState({code:e.target.value});
 	}
 	getCode(){
-		let pkgName = `${this.props.name}.${this.props.version}`;
-		fetch(`/packages/${pkgName}/${pkgName}-updater.js`)
+		fetch(`/packages/${this.props.name}/${this.props.name}-updater.js`)
 			.then(res=>{
 				if(!res.status === 200){
 					this.setState({code:'Failed to load code'});
