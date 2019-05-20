@@ -1,6 +1,7 @@
 const express = require('express');
-const api = require('./api');
 const bodyParser = require('body-parser');
+const api = require('./api');
+const packageSchedule = require('./packageSchedule');
 const app = express();
 const PORT = 8080;
 
@@ -60,6 +61,7 @@ app.post('/fetchPackage', async (req,res)=>{
 });
 
 api.fetchAll();
+packageSchedule();
 app.listen(PORT,'127.0.0.1',()=>{
 	console.error(`Listening on port ${PORT}.`);
 });

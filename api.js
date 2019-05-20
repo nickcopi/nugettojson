@@ -142,7 +142,6 @@ let fetchPackage = async (name,version)=>{
 	fs.writeFileSync(zipPath,data);
 	(new AdmZip(data)).extractAllTo(outputPath,true);
 	rimraf.sync(outputPath + '/_rels');
-	debugger;
 }
 
 
