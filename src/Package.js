@@ -15,6 +15,36 @@ export default class Package extends Component {
 		version:''
 
 	}
+	updateRequest(e){
+		const element = e.target;
+		const code = element.parentElement.children[2].value;
+		element.innerText = 'Updating...';
+		fetch('/updateUpdater',{
+			method: 'POST',
+			headers:{
+				'Content-Type': 'application/json'
+			},
+			body:JSON.stringify({
+				name: this.props.name,
+				version:this.props.version,
+				code
+
+			})
+		}).then(res=>res.json()).then(res=>{
+			console.log(res);
+			if(res.success){
+				element.innerText = 'Success!';
+				setTimeout(()=>{element.innerText = 'Update Script'},500);
+			} else {
+				element.innerText = 'Failure!';
+				setTimeout(()=>{element.innerText = 'Update Script'},500);
+			}
+		}).catch(e=>{
+			element.innerText = 'Update Script';
+			console.error(e)
+		});
+
+	}
 	fetchRequest(e){
 		const element = e.target;
 		element.innerText = 'Fetching...';
@@ -73,11 +103,11 @@ export default class Package extends Component {
 		});
 
 	}
-	updateRequest(e){
+	runRequest(e){
 		const element = e.target;
 		const buildStatus = element.parentElement.children[3];
-		element.innerText = 'Updating...';
-		fetch('/updatePackage',{
+		element.innerText = 'Running...';
+		fetch('/runUpdatePackage',{
 			method: 'POST',
 			headers:{
 				'Content-Type': 'application/json'
@@ -91,17 +121,16 @@ export default class Package extends Component {
 			console.log(res);
 			if(res.success){
 				element.innerText = 'Success!';
-				setTimeout(()=>{element.innerText = 'Update'},500);
+				setTimeout(()=>{element.innerText = 'Run Script'},500);
 			} else {
 				element.innerText = 'Failure!';
-				setTimeout(()=>{element.innerText = 'Update'},500);
+				setTimeout(()=>{element.innerText = 'Run Script'},500);
 				buildStatus.innerText = res.result;
 			}
 		}).catch(e=>{
-			element.innerText = 'Update';
+			element.innerText = 'Run Script';
 			console.error(e)
 		});
-
 	}
 
 
@@ -121,7 +150,8 @@ export default class Package extends Component {
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
 			&nbsp;
-			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update</span>
+			<span className = 'downloadBtn' onClick = {this.runRequest}>Run Script</span>
+			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update Script</span>
 			</div>
 		);
 	}

@@ -31,10 +31,19 @@ app.post('/buildPackage', async (req,res)=>{
 	}
 
 });
-app.post('/updatePackage', async (req,res)=>{
+app.post('/runUpdatePackage', async (req,res)=>{
 	
 	if(req.body.name && req.body.version){
 		res.send(await api.updatePackage(req.body.name, req.body.version));
+	} else {
+		res.send({success:false,result:'Invalid request'});
+	}
+
+});
+app.post('/updateUpdater', async (req,res)=>{
+	
+	if(req.body.name && req.body.version && req.body.code){
+		res.send(await api.updateUpdater(req.body.name, req.body.version, req.body.code));
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}

@@ -80,6 +80,14 @@ let updatePackage = async (name, version)=>{
 	}
 
 }
+let updateUpdater = async (name, version, code)=>{
+	const path = `${__dirname}/packages/${name}.${version}/`;
+	const updaterName = `${name}.${version}-updater.js`;
+	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
+	fs.writeFileSync(`${path}/${updaterName}`,code)
+	// a dumb thing to assume
+	return { success: true, result: 'Updated!'};
+}
 
 
 let updateAll = async ()=>{
@@ -172,5 +180,6 @@ module.exports = {
 	listPackages,
 	buildPackage,
 	updateAll,
-	buildAll
+	buildAll,
+	updateUpdater
 }
