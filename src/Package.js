@@ -7,6 +7,7 @@ export default class Package extends Component {
 		this.buildRequest = this.buildRequest.bind(this);
 		this.fetchRequest = this.fetchRequest.bind(this);
 		this.updateRequest = this.updateRequest.bind(this);
+		this.runRequest = this.runRequest.bind(this);
 		this.updateCode = this.updateCode.bind(this);
 
 	}
@@ -18,6 +19,7 @@ export default class Package extends Component {
 	updateRequest(e){
 		const element = e.target;
 		const code = element.parentElement.children[2].value;
+		const originalText = element.innerText;
 		element.innerText = 'Updating...';
 		fetch('/updateUpdater',{
 			method: 'POST',
@@ -34,19 +36,20 @@ export default class Package extends Component {
 			console.log(res);
 			if(res.success){
 				element.innerText = 'Success!';
-				setTimeout(()=>{element.innerText = 'Update Script'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			} else {
 				element.innerText = 'Failure!';
-				setTimeout(()=>{element.innerText = 'Update Script'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			}
 		}).catch(e=>{
-			element.innerText = 'Update Script';
+			element.innerText = originalText;
 			console.error(e)
 		});
 
 	}
 	fetchRequest(e){
 		const element = e.target;
+		const originalText = element.innerText;
 		element.innerText = 'Fetching...';
 		fetch('/fetchPackage',{
 			method: 'POST',
@@ -62,19 +65,20 @@ export default class Package extends Component {
 			console.log(res);
 			if(res.success){
 				element.innerText = 'Success!';
-				setTimeout(()=>{element.innerText = 'Fetch'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			} else {
 				element.innerText = 'Failure!';
-				setTimeout(()=>{element.innerText = 'Fetch'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			}
 		}).catch(e=>{
-			element.innerText = 'Fetch';
+			element.innerText = originalText;
 			console.error(e)
 		});
 
 	}
 	buildRequest(e){
 		const element = e.target;
+		const originalText = element.innerText;
 		const buildStatus = element.parentElement.children[3];
 		element.innerText = 'Building...';
 		fetch('/buildPackage',{
@@ -91,20 +95,21 @@ export default class Package extends Component {
 			console.log(res);
 			if(res.success){
 				element.innerText = 'Success!';
-				setTimeout(()=>{element.innerText = 'Build'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			} else {
 				element.innerText = 'Failure!';
-				setTimeout(()=>{element.innerText = 'Build'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 				buildStatus.innerText = res.result;
 			}
 		}).catch(e=>{
-			element.innerText = 'Build';
+			element.innerText = originalText;
 			console.error(e)
 		});
 
 	}
 	runRequest(e){
 		const element = e.target;
+		const originalText = element.innerText;
 		const buildStatus = element.parentElement.children[3];
 		element.innerText = 'Running...';
 		fetch('/runUpdatePackage',{
@@ -121,14 +126,14 @@ export default class Package extends Component {
 			console.log(res);
 			if(res.success){
 				element.innerText = 'Success!';
-				setTimeout(()=>{element.innerText = 'Run Script'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 			} else {
 				element.innerText = 'Failure!';
-				setTimeout(()=>{element.innerText = 'Run Script'},500);
+				setTimeout(()=>{element.innerText = originalText},500);
 				buildStatus.innerText = res.result;
 			}
 		}).catch(e=>{
-			element.innerText = 'Run Script';
+			element.innerText = originalText;
 			console.error(e)
 		});
 	}
@@ -151,6 +156,7 @@ export default class Package extends Component {
 			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.runRequest}>Run Script</span>
+			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update Script</span>
 			</div>
 		);
