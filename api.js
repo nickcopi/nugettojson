@@ -7,32 +7,40 @@ const rimraf = require('rimraf');
 const Shell = require('node-powershell');
 const csv = require('csvtojson');
 
-let fullData;
+let fullData = {};
+const feeds = ['LCC','VCU'];
 
 let getData = async () =>{
-	let data = await request('https://choco.lcc.ts.vcu.edu/nuget/LCC/Packages');
-	data = parser.parse(data);
-	newData = data.feed.entry;
-	newData = newData.map(d=>{
-		d.properties = JSON.parse(JSON.stringify(d['m:properties']));
-		delete d['m:properties'];
-		const newObject = {};
-		Object.keys(d.properties).forEach(p=>{
-			newObject[p.substring(2)] = d.properties[p];
-			delete d.properties[p];
+	for(const feed of feeds){
+		let data = await request(`https://choco.lcc.ts.vcu.edu/nuget/${feed}/Packages`);
+		data = parser.parse(data);
+		newData = data.feed.entry;
+		newData = newData.map(d=>{
+			d.properties = JSON.parse(JSON.stringify(d['m:properties']));
+			delete d['m:properties'];
+			const newObject = {};
+			Object.keys(d.properties).forEach(p=>{
+				newObject[p.substring(2)] = d.properties[p];
+				delete d.properties[p];
+			}
+			);
+			d.properties = newObject;
+			d.feed = feed;
 		}
 		);
-		d.properties = newObject;
+		data.feed.entry = data.feed.entry.filter(d=>d.properties.IsLatestVersion);
+		let dataObj = {};
+		data.feed.entry.forEach(d=>{
+			dataObj[d.title] = d;
+		});
+		fullData = {...dataObj,...fullData};
 	}
-	);
-	data.feed.entry = data.feed.entry.filter(d=>d.properties.IsLatestVersion);
 	const outputFileName = 'output.json';
 	const oldData = fs.existsSync(outputFileName)?JSON.parse(fs.readFileSync(outputFileName).toString('utf-8')):null;
-	fs.writeFileSync(outputFileName,JSON.stringify(data.feed.entry,null,2));
-	fullData = data.feed.entry;
+	fs.writeFileSync(outputFileName,JSON.stringify(fullData,null,2));
 	return {
 		oldData,
-		newData: data.feed.entry
+		newData: fullData
 	}
 
 }
@@ -44,12 +52,17 @@ let getSheet = async()=>{
 }
 
 let visitAll = async()=>{
-	fullData.forEach((d,i)=>{
+	Object.entries(fullData).forEach(([k,d])=>{
 		const name = d.title;
 		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
-		let data = fs.readFileSync(path).toString('utf-8');
-		let line = data.split('\n').find(n=>n.includes('url') && n.includes('=') && n.trim()[0] !== '$');
-		fullData[i].properties.RealPackage = !!line;
+		try {
+			let data = fs.readFileSync(path).toString('utf-8');
+			let line = data.split('\n').find(n=>n.toLowerCase().includes('url') && n.includes('=') && n.trim()[0] !== '$');
+			fullData[k].properties.RealPackage = !!line;
+		} catch(e){
+			//i dont care just quit being annoying if it doesnt work lol
+			fullData[k].properties.RealPackage = false;
+		}
 	});
 	fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
 }
@@ -126,10 +139,11 @@ let buildAll = async ()=>{
 
 let listPackages = ()=>{
 	let newList = [];
-	fullData.forEach(d=>{
+	Object.entries(fullData).forEach(([k,d])=>{
 		newList.push({
 			name: d.title,
-			version: d.properties.Version
+			version: d.properties.Version,
+			feed: d.feed
 		});
 	});
 	return newList;
@@ -141,7 +155,7 @@ let forceFetchPackage = async(name, version)=>{
 	console.log(`Fetching ${name} version ${version}.`);
 	await fetchPackage(name,version);
 	return {success:true};
-	
+
 }
 
 let fetchPackage = async (name,version)=>{
@@ -149,12 +163,13 @@ let fetchPackage = async (name,version)=>{
 	const path = `packages/${name}`;
 	const outputPath = path + '/output';
 	const zipPath = `${path}/${pkgName}.nupkg`;
+	const feed = fullData[name].feed;
 	mkdirp.sync(path);
 	fs.copyFileSync('./template.js', `${path}/${name}-updater.js`);
 	rimraf.sync(outputPath);
 	mkdirp.sync(outputPath);
 	const options = {
-		url: `https://choco.lcc.ts.vcu.edu/nuget/LCC/package/${name}/${version}`,
+		url: `https://choco.lcc.ts.vcu.edu/nuget/${feed}/package/${name}/${version}`,
 		encoding: null
 	}
 	let data = await request(options);
@@ -170,19 +185,17 @@ let fetchAll = ()=>{
 		let newData = res.newData;
 		let oldData = res.oldData;
 		//console.log(res.map(r=>r.title).filter((r,i,arr)=>arr.indexOf(r) === i));
-		newData.forEach(d=>{
+		Object.entries(newData).forEach(([k,d])=>{
 			const name = d.title;
 			const version = d.properties.Version
 			const path = `packages/${name}`;
 			let localExists = fs.existsSync(path);
-			let oldVersion = oldData.find(o=>o.title === name && o.properties.Version === version);
+			let oldVersion = Object.entries(oldData).find(([k,o])=>o.title === name && o.properties.Version === version)[1];
 			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash;
 			if(!localExists || hashDiffers){
 				console.log(`Fetching ${name} version ${version}.`);
 				fetchPackage(name,version);
 			}
-			debugger;
-
 		});
 		visitAll();
 
