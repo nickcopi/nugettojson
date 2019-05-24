@@ -5,6 +5,7 @@ const fs = require('fs');
 const AdmZip = require('adm-zip');
 const rimraf = require('rimraf');
 const Shell = require('node-powershell');
+const csv = require('csvtojson');
 
 let fullData;
 
@@ -34,6 +35,23 @@ let getData = async () =>{
 		newData: data.feed.entry
 	}
 
+}
+
+let getSheet = async()=>{
+	let data = await request('https://docs.google.com/spreadsheets/d/e/2PACX-1vR45pxpayXawpYaFR1Fg1loV5mjon8hX9Il46C8TEYas4UTxoBuZ08JKZMam-5W_rUxQUu0N4_PTWzi/pub?output=csv');
+	let json = await csv().fromString(data);
+	console.log(json);
+}
+
+let visitAll = async()=>{
+	fullData.forEach((d,i)=>{
+		const name = d.title;
+		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
+		let data = fs.readFileSync(path).toString('utf-8');
+		let line = data.split('\n').find(n=>n.includes('url') && n.includes('=') && n.trim()[0] !== '$');
+		fullData[i].properties.RealPackage = !!line;
+	});
+	fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
 }
 
 let buildPackage = async (name, version)=>{
@@ -166,6 +184,7 @@ let fetchAll = ()=>{
 			debugger;
 
 		});
+		visitAll();
 
 	}).catch(e=>{
 		console.error(e);
