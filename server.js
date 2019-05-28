@@ -13,6 +13,19 @@ app.get('/listPackages', (req,res)=>{
 	res.send(api.listPackages());
 
 });
+app.get('/getTestQueue', (req,res)=>{
+	res.send(api.getTestQueue());
+
+});
+
+app.post('/agentReport',(req,res)=>{
+	if(req.body.name && req.body.result){
+		api.receiveAgentReport(req.body.name,req.body.success,req.body.error,req.body.result);
+		return res.send('Ok');
+	} else {
+		return res.send('Bad');
+	}
+});
 
 app.get('/updateAll', async (req,res)=>{
 	const report = await api.updateAll();

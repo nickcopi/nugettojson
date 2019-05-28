@@ -1,3 +1,13 @@
+/*
+ *	Some pretty big warnings about this mess:
+ *	It is NOT race condition safe and WILL have problems if multiple 
+ *	functions that do the same file IO are called at once.
+ *	It is NOT well documented. If you want documentation,
+ *	read the code and figure out what it does and submit your
+ *	docs as a pull request or wait until I do it.
+ *
+ *
+ * */
 const request = require('request-promise');
 const parser = require('fast-xml-parser');
 const mkdirp = require('mkdirp');
@@ -84,11 +94,53 @@ let buildPackage = async (name, version)=>{
 		const result = await ps.invoke();
 		const success = fs.existsSync(oldPackagePath);
 		if(!success && fs.existsSync(oldPackagePath + '.old')) fs.renameSync(oldPackagePath + '.old', oldPackagePath);
+		if(success) addPackageToTestQueue(name);
 		return {success,result};
 	}catch(e){
 		return {success:false,result:e.toString()};
 		console.error(e);
 	}
+}
+
+/*Gross race condition causing code (beware)*/
+let addPackageToTestQueue = name=>{
+	const queue = getTestQueue();
+	if(queue.find(d=>d === name)) return;
+	queue.push(name);
+	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
+}
+
+let getTestQueue = ()=>{
+	if(!fs.existsSync('testQueue.json')) return [];
+	return JSON.parse(fs.readFileSync('testQueue.json').toString('utf-8'));
+}
+
+let receiveAgentReport = (name,success,error,result)=>{
+	const logString = `${name} at ${new Date().toString()}: `;
+	const path = `${__dirname}/packages/${name}/`;
+	/*If an agent builds for a package we don't have, what??? go away. just go away.*/
+	if(!fs.existsSync(path)) return;
+	if(error){
+		/* Error means the agent is broken and can't even figure out how to build
+		 * so we leave the build in the queue hoping it gets its self together or
+		 * another agent is able to build it.*/
+		fs.appendFileSync('tests.log', logString + 'agent had error: ' + error + '\n');
+		return;
+	}
+	/*remove the package from the queue of packages to be tested*/
+	let queue = getTestQueue();
+	queue = queue.filter(d=>d !== name);
+	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
+	if(!success){
+		fs.appendFileSync('tests.log', logString + 'build/tests failed: ' + result + '\n');
+		return;
+	}
+	fs.appendFileSync('tests.log', logString + 'Pushing package to proget.' + '\n');
+	pushPackage(name);
+}
+
+let pushPackage = name=>{
+	console.log(`Pretending to push package ${name}.`);
 
 }
 
@@ -213,5 +265,7 @@ module.exports = {
 	buildPackage,
 	updateAll,
 	buildAll,
-	updateUpdater
+	updateUpdater,
+	getTestQueue,
+	receiveAgentReport
 }
