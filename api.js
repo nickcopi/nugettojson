@@ -92,9 +92,10 @@ let buildPackage = async (name, version)=>{
 		ps.addCommand('Move-Item -Force *.nupkg ..');
 		if(fs.existsSync(oldPackagePath)) fs.renameSync(oldPackagePath, oldPackagePath + '.old');
 		const result = await ps.invoke();
+		ps.dispose();
 		const success = fs.existsSync(oldPackagePath);
 		if(!success && fs.existsSync(oldPackagePath + '.old')) fs.renameSync(oldPackagePath + '.old', oldPackagePath);
-		if(success) addPackageToTestQueue(name);
+		if(success) addPackageToTestQueue(name,version);
 		return {success,result};
 	}catch(e){
 		return {success:false,result:e.toString()};
@@ -103,10 +104,10 @@ let buildPackage = async (name, version)=>{
 }
 
 /*Gross race condition causing code (beware)*/
-let addPackageToTestQueue = name=>{
-	const queue = getTestQueue();
-	if(queue.find(d=>d === name)) return;
-	queue.push(name);
+let addPackageToTestQueue = (name,version)=>{
+	let queue = getTestQueue();
+	queue = queue.filter(d=>d.name !== name);
+	queue.push({name,version});
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 }
 
@@ -129,7 +130,7 @@ let receiveAgentReport = (name,success,error,result)=>{
 	}
 	/*remove the package from the queue of packages to be tested*/
 	let queue = getTestQueue();
-	queue = queue.filter(d=>d !== name);
+	queue = queue.filter(d=>d.name !== name);
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 	if(!success){
 		fs.appendFileSync('tests.log', logString + 'build/tests failed: ' + result + '\n');
@@ -137,6 +138,22 @@ let receiveAgentReport = (name,success,error,result)=>{
 	}
 	fs.appendFileSync('tests.log', logString + 'Pushing package to proget.' + '\n');
 	pushPackage(name);
+}
+
+let callDibs = name=>{
+	let queue = getTestQueue();
+	let success = false;
+	queue = queue.map(q=>{
+		if(q.name === name && !q.dibs){
+			success = true;
+			q.dibs = true;
+		}
+		return q;
+	});
+	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
+	return {success};
+	
+
 }
 
 let pushPackage = name=>{
@@ -157,6 +174,7 @@ let updatePackage = async (name, version)=>{
 		ps.addCommand(`cd ${path}`);
 		ps.addCommand(`node ${updaterName}`);
 		const result = await ps.invoke();
+		ps.dispose();
 		return {success:true,result};
 	}catch(e){
 		return {success:false,result:e.toString()};
@@ -267,5 +285,6 @@ module.exports = {
 	buildAll,
 	updateUpdater,
 	getTestQueue,
-	receiveAgentReport
+	receiveAgentReport,
+	callDibs
 }

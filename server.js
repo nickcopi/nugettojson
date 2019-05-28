@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 app.use('/packages',express.static(`${__dirname}/packages`));
 app.use('/',express.static(`${__dirname}/build`));
 
+
 app.get('/listPackages', (req,res)=>{
 	res.send(api.listPackages());
 
@@ -22,6 +23,14 @@ app.post('/agentReport',(req,res)=>{
 	if(req.body.name && req.body.result){
 		api.receiveAgentReport(req.body.name,req.body.success,req.body.error,req.body.result);
 		return res.send('Ok');
+	} else {
+		return res.send('Bad');
+	}
+});
+
+app.post('/agentDibs',(req,res)=>{
+	if(req.body.name){
+		return res.send(api.callDibs(req.body.name));
 	} else {
 		return res.send('Bad');
 	}
