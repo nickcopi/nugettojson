@@ -31,6 +31,7 @@ export default class TestsList extends Component {
 			});
 	}
 	loadTests=(tests)=>{
+		tests.reverse();
 		return tests.map(t=>(
 			<Test success={t.success} error={t.error} result={t.result} name={t.name} date={t.date}/> 
 		));
