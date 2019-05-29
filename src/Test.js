@@ -1,7 +1,7 @@
 
 import React, {Component} from 'react';
 
-export default class Package extends Component {
+export default class Test extends Component {
 	state = {code:null};
 	constructor(props){
 		super(props);

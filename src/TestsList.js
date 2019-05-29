@@ -23,7 +23,7 @@ export default class TestsList extends Component {
 		fetch('/getTests')
 			.then(res=>res.json())
 			.then(data=>{
-				this.setState({tests:data});
+				this.setState({tests:data.reverse()});
 
 			})
 			.catch((err)=>{
@@ -31,7 +31,6 @@ export default class TestsList extends Component {
 			});
 	}
 	loadTests=(tests)=>{
-		tests.reverse();
 		return tests.map(t=>(
 			<Test success={t.success} error={t.error} result={t.result} name={t.name} date={t.date}/> 
 		));
