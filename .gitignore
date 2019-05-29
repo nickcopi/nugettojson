@@ -3,7 +3,7 @@ packages
 package-lock.json
 output.json
 testQueue.json
-tests.log
 schedule.log
 build
+testLogs.json
 *.swp

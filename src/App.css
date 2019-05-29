@@ -56,3 +56,22 @@
 .downloadBtn:hover{
 	background-color: #8FBAA3;
 }
+.menuItem{
+	color:#2d3b33;
+	background-color:#ade0c5;
+	text-decoration: none;
+	padding:10px;
+}
+.menuItem:hover{
+	background-color:#c0fadb;
+	cursor:pointer;
+
+}
+.menuBar{
+	display: flex;
+	justify-content: space-evenly;
+	background-color: #ade0c5;
+}
+div{
+	width:100%;
+}

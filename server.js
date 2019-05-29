@@ -5,7 +5,7 @@ const packageSchedule = require('./packageSchedule');
 const app = express();
 const PORT = 8080;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'50mb', extended:true}));
 app.use('/packages',express.static(`${__dirname}/packages`));
 app.use('/',express.static(`${__dirname}/build`));
 

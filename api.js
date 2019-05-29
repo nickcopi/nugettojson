@@ -119,24 +119,35 @@ let getTestQueue = ()=>{
 let receiveAgentReport = (name,success,error,result)=>{
 	const logString = `${name} at ${new Date().toString()}: `;
 	const path = `${__dirname}/packages/${name}/`;
+	const response = {
+		name,
+		success,
+		error,
+		result
+	}
 	/*If an agent builds for a package we don't have, what??? go away. just go away.*/
 	if(!fs.existsSync(path)) return;
-	if(error){
-		/* Error means the agent is broken and can't even figure out how to build
-		 * so we leave the build in the queue hoping it gets its self together or
-		 * another agent is able to build it.*/
-		fs.appendFileSync('tests.log', logString + 'agent had error: ' + error + '\n');
-		return;
+	let currentStatus;
+	if(!fs.existsSync('testLogs.json')) currentStatus = [];
+	else {
+		try{ 
+			currentStatus = JSON.stringify(fs.readFileSync('testLogs.json').toString('utf-8')); 
+		} catch(e){
+			console.log(e);
+			currentStatus = [];
+		}
 	}
+	currentStatus.push(response);
+	fs.writeFileSync('testLogs.json',JSON.stringify(currentStatus));
+	/* Error means the agent is broken and can't even figure out how to build
+	 * so we leave the build in the queue hoping it gets its self together or
+	 * another agent is able to build it.*/
+	if(error) return;
 	/*remove the package from the queue of packages to be tested*/
 	let queue = getTestQueue();
 	queue = queue.filter(d=>d.name !== name);
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
-	if(!success){
-		fs.appendFileSync('tests.log', logString + 'build/tests failed: ' + result + '\n');
-		return;
-	}
-	fs.appendFileSync('tests.log', logString + 'Pushing package to proget.' + '\n');
+	if(!success) return;
 	pushPackage(name);
 }
 
@@ -152,7 +163,7 @@ let callDibs = name=>{
 	});
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 	return {success};
-	
+
 
 }
 
