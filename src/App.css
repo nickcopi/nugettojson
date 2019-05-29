@@ -12,8 +12,27 @@
 	width:60%;
 	padding:10px;
 }
+.testBar{
+	border-style:solid;
+	background-color: #ADE0C5;
+	border-color: #C0FADB;
+	/*padding:10px;*/
+	border-left:0px;
+	border-right:0px;
+	padding-top:10px;
+	padding-bottom:10px;
+	display: flex;
+	cursor:pointer;
+	/*justify-content: space-evenly;*/
+}
+.testBar:hover{
+	background-color: #8FBAA3;
+}
 .nameHeader{
 	font-size:30px;
+}
+.testItem{
+	width:33%;
 }
 .versionHeader{
 	font-size:8px;

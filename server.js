@@ -18,6 +18,10 @@ app.get('/getTestQueue', (req,res)=>{
 	res.send(api.getTestQueue());
 
 });
+app.get('/getTests', (req,res)=>{
+	res.send(api.getTests());
+
+});
 
 app.post('/agentReport',(req,res)=>{
 	if(req.body.name && req.body.result){

@@ -117,26 +117,17 @@ let getTestQueue = ()=>{
 }
 
 let receiveAgentReport = (name,success,error,result)=>{
-	const logString = `${name} at ${new Date().toString()}: `;
 	const path = `${__dirname}/packages/${name}/`;
 	const response = {
 		name,
 		success,
 		error,
-		result
+		result,
+		date: new Date().toString()
 	}
 	/*If an agent builds for a package we don't have, what??? go away. just go away.*/
 	if(!fs.existsSync(path)) return;
-	let currentStatus;
-	if(!fs.existsSync('testLogs.json')) currentStatus = [];
-	else {
-		try{ 
-			currentStatus = JSON.stringify(fs.readFileSync('testLogs.json').toString('utf-8')); 
-		} catch(e){
-			console.log(e);
-			currentStatus = [];
-		}
-	}
+	let currentStatus = getTests();
 	currentStatus.push(response);
 	fs.writeFileSync('testLogs.json',JSON.stringify(currentStatus));
 	/* Error means the agent is broken and can't even figure out how to build
@@ -170,6 +161,16 @@ let callDibs = name=>{
 let pushPackage = name=>{
 	console.log(`Pretending to push package ${name}.`);
 
+}
+
+let getTests = ()=>{
+	let data;
+	try{
+		data = JSON.parse(fs.readFileSync('testLogs.json').toString('utf-8'));
+	} catch(e){
+		data = [];
+	}
+	return data;
 }
 
 let updatePackage = async (name, version)=>{
@@ -297,5 +298,6 @@ module.exports = {
 	updateUpdater,
 	getTestQueue,
 	receiveAgentReport,
-	callDibs
+	callDibs,
+	getTests
 }
