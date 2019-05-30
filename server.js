@@ -40,13 +40,37 @@ app.post('/agentDibs',(req,res)=>{
 	}
 });
 
-app.get('/updateAll', async (req,res)=>{
-	const report = await api.updateAll();
-	res.send(report);
+app.post('/updateAll', async (req,res)=>{
+	try{
+		api.updateAll();
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
 });
-app.get('/buildAll', async (req,res)=>{
-	const report = await api.buildAll();
-	res.send(report);
+app.post('/buildAll', async (req,res)=>{
+	try{
+		api.buildAll();
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
+});
+app.post('/fetchAll', async (req,res)=>{
+	try{
+		api.fetchAll(true);
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
+});
+app.post('/clearTestLogs', async (req,res)=>{
+	try{
+		api.clearTestLogs();
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
 });
 
 app.post('/buildPackage', async (req,res)=>{

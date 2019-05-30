@@ -262,7 +262,7 @@ let fetchPackage = async (name,version)=>{
 
 
 
-let fetchAll = ()=>{ 
+let fetchAll = force=>{ 
 	getData().then(res=>{
 		let newData = res.newData;
 		let oldData = res.oldData;
@@ -273,7 +273,7 @@ let fetchAll = ()=>{
 			const path = `packages/${name}`;
 			let localExists = fs.existsSync(path);
 			let oldVersion = Object.entries(oldData).find(([k,o])=>o.title === name && o.properties.Version === version)[1];
-			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash;
+			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash || force;
 			if(!localExists || hashDiffers){
 				console.log(`Fetching ${name} version ${version}.`);
 				fetchPackage(name,version);

@@ -28,6 +28,9 @@
 .testBar:hover{
 	background-color: #8FBAA3;
 }
+.centerBar{
+	justify-content:center;
+}
 .nameHeader{
 	font-size:30px;
 }
