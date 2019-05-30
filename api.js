@@ -55,6 +55,17 @@ let getData = async () =>{
 
 }
 
+let clearTestLogs = ()=>{
+	fs.writeFileSync('testLogs.json','[]');
+}
+let clearTestQueue = ()=>{
+	fs.writeFileSync('testQueue.json','[]');
+}
+let removeAllPackages = ()=>{
+	rimraf.sync(`${__dirname}/packages`);
+	fullData = {};
+}
+
 let getSheet = async()=>{
 	let data = await request('https://docs.google.com/spreadsheets/d/e/2PACX-1vR45pxpayXawpYaFR1Fg1loV5mjon8hX9Il46C8TEYas4UTxoBuZ08JKZMam-5W_rUxQUu0N4_PTWzi/pub?output=csv');
 	let json = await csv().fromString(data);
@@ -299,5 +310,8 @@ module.exports = {
 	getTestQueue,
 	receiveAgentReport,
 	callDibs,
-	getTests
+	getTests,
+	clearTestLogs,
+	clearTestQueue,
+	removeAllPackages
 }

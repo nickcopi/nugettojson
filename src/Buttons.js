@@ -17,17 +17,14 @@ export default class Buttons extends Component {
 				<span path='/fetchAll' onClick={this.fetchPath} className = 'testBar centerBar'>Force Fetch All Packages</span>	
 				<span path='/updateAll' onClick={this.fetchPath} className = 'testBar centerBar'>Run Update All Packages</span>	
 				<span path='/buildAll' onClick={this.fetchPath} className = 'testBar centerBar'>Build All Packages</span>	
-				<span className = 'testBar centerBar'>Clear All Test Logs</span>	
-				<span className = 'testBar centerBar'>Empty Test Queue</span>	
-				<span className = 'testBar centerBar'>Delete All Local Packages</span>	
+				<span path='/clearTestLogs' onClick={this.fetchPath} className = 'testBar centerBar'>Clear All Test Logs</span>	
+				<span path='/clearTestQueue' onClick={this.fetchPath} className = 'testBar centerBar'>Empty Test Queue</span>	
+				<span path='/removeAllPackages' onClick={this.fetchPath }className = 'testBar centerBar'>Delete All Local Packages</span>	
 			</div>
 		);
 	}
 	danger(){
 		return window.confirm('This could break operations, not work properly, or be generally bad. Are you sure you want to continue?');
-	}
-	fetchThen(res,element){
-
 	}
 	fetchPath(e){
 		if(!this.danger()) return;

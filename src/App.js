@@ -5,7 +5,6 @@ import './App.css';
 import Home from './Home';
 import Tests from './Tests';
 import Buttons from './Buttons';
-import PackageList from './PackageList';
 import MenuBar from './MenuBar';
 
 

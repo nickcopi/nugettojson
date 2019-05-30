@@ -72,6 +72,22 @@ app.post('/clearTestLogs', async (req,res)=>{
 		return res.send({attempted:false});
 	}
 });
+app.post('/clearTestQueue', async (req,res)=>{
+	try{
+		api.clearTestQueue();
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
+});
+app.post('/removeAllPackages', async (req,res)=>{
+	try{
+		api.removeAllPackages();
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
+});
 
 app.post('/buildPackage', async (req,res)=>{
 	

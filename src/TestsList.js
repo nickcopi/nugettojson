@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Test from './Test';
 
 export default class TestsList extends Component {
-	state = {tests:null};
+	state = {tests:null,interval:null};
 	render(){
 		let tests = this.state.tests;
 		let data = tests?this.loadTests(tests):'Loading';
@@ -15,9 +15,12 @@ export default class TestsList extends Component {
 	}
 	componentDidMount(){
 		this.updateTests();
-		setInterval(()=>{
+		this.setState({interval:setInterval(()=>{
 			this.updateTests();
-		},1000*60);
+		},1000*60)});
+	}
+	componentWillUnmount(){
+		clearInterval(this.state.interval);
 	}
 	updateTests(){
 		fetch('/getTests')
