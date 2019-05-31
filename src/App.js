@@ -5,6 +5,7 @@ import './App.css';
 import Home from './Home';
 import Tests from './Tests';
 import Buttons from './Buttons';
+import Queue from './Queue';
 import MenuBar from './MenuBar';
 
 
@@ -17,6 +18,7 @@ function App() {
 	  		<br/><br/>
 			<Route exact path = '/' component = {Home}/>
 			<Route path = '/tests' component = {Tests}/>
+			<Route path = '/queue' component = {Queue}/>
 			<Route path = '/danger' component = {Buttons}/>
 		</div>
 	</HashRouter>

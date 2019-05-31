@@ -10,7 +10,8 @@ export default class MenuBar extends Component {
 		return (
 			<div class='menuBar'>
 				<MenuItem url = '/' text = "Home"></MenuItem>
-				<MenuItem url = '/tests' text = "View Tests"></MenuItem>
+				<MenuItem url = '/tests' text = "Test Log"></MenuItem>
+				<MenuItem url = '/queue' text = "Test Queue"></MenuItem>
 				<MenuItem url = '/danger' text = "Danger Zone"></MenuItem>
 			</div>
 		);

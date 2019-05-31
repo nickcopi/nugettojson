@@ -1,7 +1,7 @@
 {
 	"feeds":[
-		"VCU",
-		"LCC"
+		"LCC",
+		"VCU"
 	],
 	"nugetServer":"https://choco.lcc.ts.vcu.edu/nuget/",
 	"googleSheet":"https://docs.google.com/spreadsheets/d/e/2PACX-1vR45pxpayXawpYaFR1Fg1loV5mjon8hX9Il46C8TEYas4UTxoBuZ08JKZMam-5W_rUxQUu0N4_PTWzi/pub?output=csv"
