@@ -14,6 +14,7 @@ function App() {
 	  <HashRouter basename = '/'>
 		<div>
 			<MenuBar/>
+	  		<br/><br/>
 			<Route exact path = '/' component = {Home}/>
 			<Route path = '/tests' component = {Tests}/>
 			<Route path = '/danger' component = {Buttons}/>
