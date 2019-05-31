@@ -16,13 +16,14 @@ const AdmZip = require('adm-zip');
 const rimraf = require('rimraf');
 const Shell = require('node-powershell');
 const csv = require('csvtojson');
+const config = require('./config.json');
 
 let fullData = {};
-const feeds = ['LCC','VCU'];
+const feeds = config.feeds;
 
 let getData = async () =>{
 	for(const feed of feeds){
-		let data = await request(`https://choco.lcc.ts.vcu.edu/nuget/${feed}/Packages`);
+		let data = await request(`${config.nugetServer}${feed}/Packages`);
 		data = parser.parse(data);
 		newData = data.feed.entry;
 		newData = newData.map(d=>{
@@ -67,7 +68,7 @@ let removeAllPackages = ()=>{
 }
 
 let getSheet = async()=>{
-	let data = await request('https://docs.google.com/spreadsheets/d/e/2PACX-1vR45pxpayXawpYaFR1Fg1loV5mjon8hX9Il46C8TEYas4UTxoBuZ08JKZMam-5W_rUxQUu0N4_PTWzi/pub?output=csv');
+	let data = await request(config.googleSheet);
 	let json = await csv().fromString(data);
 	console.log(json);
 }
@@ -262,7 +263,7 @@ let fetchPackage = async (name,version)=>{
 	rimraf.sync(outputPath);
 	mkdirp.sync(outputPath);
 	const options = {
-		url: `https://choco.lcc.ts.vcu.edu/nuget/${feed}/package/${name}/${version}`,
+		url: `${config.nugetServer}${feed}/package/${name}/${version}`,
 		encoding: null
 	}
 	let data = await request(options);
