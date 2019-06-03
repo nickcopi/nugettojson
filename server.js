@@ -80,6 +80,13 @@ app.post('/clearTestQueue', async (req,res)=>{
 		return res.send({attempted:false});
 	}
 });
+app.post('/removeQueueItem', async (req,res)=>{
+	if(req.body.name && req.body.version){
+		res.send(await api.removeQueueItem(req.body.name, req.body.version));
+	} else {
+		res.send({success:false,result:'Invalid request'});
+	}
+});
 app.post('/removeAllPackages', async (req,res)=>{
 	try{
 		api.removeAllPackages();

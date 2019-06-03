@@ -123,6 +123,13 @@ let addPackageToTestQueue = (name,version)=>{
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 }
 
+let removeQueueItem = (name,version)=>{
+	let queue = getTestQueue();
+	queue = queue.filter(d=>d.name !== name && d.version !== version);
+	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
+	return {success:true};
+}
+
 let getTestQueue = ()=>{
 	if(!fs.existsSync('testQueue.json')) return [];
 	return JSON.parse(fs.readFileSync('testQueue.json').toString('utf-8'));
@@ -315,5 +322,6 @@ module.exports = {
 	getTests,
 	clearTestLogs,
 	clearTestQueue,
-	removeAllPackages
+	removeAllPackages,
+	removeQueueItem
 }

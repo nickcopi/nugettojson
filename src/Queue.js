@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import QueueItem from './QueueItem';
 
 export default class Queue extends Component {
+	constructor(props){
+		super(props);
+		this.updateQueue = this.updateQueue.bind(this);
+	}
 	state = {queue:null,interval:null};
 	render(){
 		let queue = this.state.queue;
@@ -23,6 +27,7 @@ export default class Queue extends Component {
 		clearInterval(this.state.interval);
 	}
 	updateQueue(){
+		console.log('aaaa');
 		fetch('/getTestQueue')
 			.then(res=>res.json())
 			.then(data=>{
@@ -33,9 +38,12 @@ export default class Queue extends Component {
 				console.log(err);
 			});
 	}
+	doQueueUpdate(){
+		this.updateQueue();
+	}	
 	loadQueue=(queue)=>{
 		return queue.map(q=>(
-			<QueueItem name={q.name} version={q.version} dibs={q.dibs}/>
+			<QueueItem refresh={this.doQueueUpdate} refresh={this.updateQueue} name={q.name} version={q.version} dibs={q.dibs}/>
 		));
 	}
 }
