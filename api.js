@@ -162,13 +162,13 @@ let receiveAgentReport = (name,success,error,result,hostname)=>{
 	pushPackage(name);
 }
 
-let callDibs = name=>{
+let callDibs = (name,hostname)=>{
 	let queue = getTestQueue();
 	let success = false;
 	queue = queue.map(q=>{
 		if(q.name === name && !q.dibs){
 			success = true;
-			q.dibs = true;
+			q.dibs = hostname;
 		}
 		return q;
 	});

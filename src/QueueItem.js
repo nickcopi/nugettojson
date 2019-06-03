@@ -23,7 +23,7 @@ export default class QueueItem extends Component {
 					{version}
 				</span>
 				<span className = 'testItem' style = {{color:dibs?'green':'inherit'}}>
-					{!dibs?'Awaiting an agent':'Being processed by an agent'}
+					{!dibs?'Awaiting an agent':'Being processed by agent ' + dibs}
 				</span>
 			</div>
 		);

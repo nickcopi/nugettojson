@@ -33,8 +33,8 @@ app.post('/agentReport',(req,res)=>{
 });
 
 app.post('/agentDibs',(req,res)=>{
-	if(req.body.name){
-		return res.send(api.callDibs(req.body.name));
+	if(req.body.name && req.body.hostname){
+		return res.send(api.callDibs(req.body.name, req.body.hostname));
 	} else {
 		return res.send('Bad');
 	}
