@@ -28,11 +28,14 @@ export default class Test extends Component {
 
 
 	render(){
-		let {name,success,date} = this.props;
+		let {name,success,date,agent} = this.props;
 		return (
 			<div className='testBar' onClick={this.showMore}>
 				<span className='testItem'>
 					{date}
+				</span>
+				<span className='testItem'>
+					{agent}
 				</span>
 				<span className='testItem'>
 					{name}

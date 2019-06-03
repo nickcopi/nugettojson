@@ -9,6 +9,21 @@ export default class TestsList extends Component {
 		return (
 			<center className = 'packageList'>
 			<br/>
+			<div className='testHeader'>
+				<span className='testItem'>
+					Time Stamp
+				</span>
+				<span className='testItem'>
+					Agent Hostname
+				</span>
+				<span className='testItem'>
+					Package Name
+				</span>
+				<span className='testItem'>
+					Success
+				</span>
+				
+			</div>
 			{data}
 			</center>
 		);
@@ -35,7 +50,7 @@ export default class TestsList extends Component {
 	}
 	loadTests=(tests)=>{
 		return tests.map(t=>(
-			<Test success={t.success} error={t.error} result={t.result} name={t.name} date={t.date}/> 
+			<Test agent={t.agent} success={t.success} error={t.error} result={t.result} name={t.name} date={t.date}/> 
 		));
 	}
 }

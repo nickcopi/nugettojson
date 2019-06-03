@@ -24,8 +24,8 @@ app.get('/getTests', (req,res)=>{
 });
 
 app.post('/agentReport',(req,res)=>{
-	if(req.body.name && req.body.result){
-		api.receiveAgentReport(req.body.name,req.body.success,req.body.error,req.body.result);
+	if(req.body.name && req.body.result && req.body.hostname){
+		api.receiveAgentReport(req.body.name,req.body.success,req.body.error,req.body.result,req.body.hostname);
 		return res.send('Ok');
 	} else {
 		return res.send('Bad');

@@ -28,6 +28,16 @@
 .testBar:hover{
 	background-color: #8FBAA3;
 }
+.testHeader{
+	border-style: solid;
+	border-color: #ADE0C5;
+	background-color: #C0FADB;
+	border-left: 0px;
+	border-right: 0px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	display: flex;
+}
 .centerBar{
 	justify-content:center;
 }

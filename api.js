@@ -128,13 +128,14 @@ let getTestQueue = ()=>{
 	return JSON.parse(fs.readFileSync('testQueue.json').toString('utf-8'));
 }
 
-let receiveAgentReport = (name,success,error,result)=>{
+let receiveAgentReport = (name,success,error,result,hostname)=>{
 	const path = `${__dirname}/packages/${name}/`;
 	const response = {
 		name,
 		success,
 		error,
 		result,
+		agent: hostname,
 		date: new Date().toString()
 	}
 	/*If an agent builds for a package we don't have, what??? go away. just go away.*/
