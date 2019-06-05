@@ -125,7 +125,7 @@ let addPackageToTestQueue = (name,version)=>{
 
 let removeQueueItem = (name,version)=>{
 	let queue = getTestQueue();
-	queue = queue.filter(d=>d.name !== name && d.version !== version);
+	queue = queue.filter(d=>!(d.name === name && d.version === version));
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 	return {success:true};
 }

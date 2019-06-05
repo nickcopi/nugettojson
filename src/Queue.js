@@ -27,7 +27,6 @@ export default class Queue extends Component {
 		clearInterval(this.state.interval);
 	}
 	updateQueue(){
-		console.log('aaaa');
 		fetch('/getTestQueue')
 			.then(res=>res.json())
 			.then(data=>{
