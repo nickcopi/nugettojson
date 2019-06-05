@@ -172,6 +172,8 @@ let callDibs = (name,hostname)=>{
 		}
 		return q;
 	});
+	//let dependencies = fullData[name].properties.Dependencies;
+	//dependencies = dependencies?dependencies.split('|'):[];
 	fs.writeFileSync('testQueue.json',JSON.stringify(queue,null,2));
 	return {success};
 
@@ -278,6 +280,10 @@ let fetchPackage = async (name,version)=>{
 	fs.writeFileSync(zipPath,data);
 	(new AdmZip(data)).extractAllTo(outputPath,true);
 	rimraf.sync(outputPath + '/_rels');
+	let nuspecPath = `${outputPath}/${name}.nuspec`;
+	let nuspec = fs.readFileSync(nuspecPath).toString('utf-8');
+	nuspec = nuspec.split('\n').filter(l=>!l.includes('<serviceable>')).join('');
+	fs.writeFileSync(nuspecPath,nuspec);
 }
 
 
