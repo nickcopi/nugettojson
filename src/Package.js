@@ -13,8 +13,9 @@ export default class Package extends Component {
 	}
 	defaultProps = {
 		name:'',
-		version:''
-
+		version:'',
+		zipArgs:{},
+		packageArgs:{}
 	}
 	updateRequest(e){
 		const element = e.target;
@@ -140,11 +141,12 @@ export default class Package extends Component {
 
 
 	render(){
-		let name = this.props.name;
-		let version = this.props.version;
+		let {name, version, zipArgs, packageArgs} = this.props;
 		let code = this.state.code?this.state.code:'Loading...';
 		return (
 			<div className = 'package'>
+			{JSON.stringify(zipArgs,null,2)}
+			{JSON.stringify(packageArgs,null,2)}
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
 			<textarea className = 'codeView' onChange={this.updateCode} value = {code}>{code}</textarea>

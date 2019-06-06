@@ -17,6 +17,7 @@ const rimraf = require('rimraf');
 const Shell = require('node-powershell');
 const csv = require('csvtojson');
 const config = require('./config.json');
+const pp = require('./powerParser');
 
 let fullData = {};
 const feeds = config.feeds;
@@ -81,9 +82,13 @@ let visitAll = async()=>{
 			let data = fs.readFileSync(path).toString('utf-8');
 			let line = data.split('\n').find(n=>n.toLowerCase().includes('url') && n.includes('=') && n.trim()[0] !== '$');
 			fullData[k].properties.RealPackage = !!line;
+			fullData[k].properties.ZipArgs = pp.readZip(data);
+			fullData[k].properties.PackageArgs = pp.readPackage(data);
 		} catch(e){
 			//i dont care just quit being annoying if it doesnt work lol
 			fullData[k].properties.RealPackage = false;
+			fullData[k].properties.ZipArgs = {};
+			fullData[k].properties.PackageArgs = {};
 		}
 	});
 	fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
@@ -241,14 +246,19 @@ let buildAll = async ()=>{
 	}));
 }
 
-let listPackages = ()=>{
+let listPackages = (extraInfo)=>{
 	let newList = [];
 	Object.entries(fullData).forEach(([k,d])=>{
-		newList.push({
+		const packageInfo = {
 			name: d.title,
 			version: d.properties.Version,
 			feed: d.feed
-		});
+		}
+		if(extraInfo){ 
+			packageInfo.zipArgs = d.properties.ZipArgs;
+			packageInfo.packageArgs = d.properties.PackageArgs;
+		}
+		newList.push(packageInfo);
 	});
 	return newList;
 }

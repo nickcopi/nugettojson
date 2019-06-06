@@ -29,7 +29,7 @@ export default class PackageView extends Component {
 	loadPackages=(packages)=>{
 		return packages.map(p=>(
 			<div>
-			<Package name={p.name} version = {p.version}/>
+			<Package zipArgs={p.zipArgs} packageArgs={p.packageArgs} name={p.name} version = {p.version}/>
 			<br/>
 			</div>
 		));

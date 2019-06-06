@@ -11,7 +11,7 @@ app.use('/',express.static(`${__dirname}/build`));
 
 
 app.get('/listPackages', (req,res)=>{
-	res.send(api.listPackages());
+	res.send(api.listPackages(true));
 
 });
 app.get('/getTestQueue', (req,res)=>{
