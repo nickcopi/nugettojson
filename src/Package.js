@@ -158,6 +158,7 @@ export default class Package extends Component {
 		);
 	}
 	componentDidMount(){
+		//Object.fromEntries([...$0.querySelectorAll('input')].map(m=>[m.placeholder,m.value]))
 	}
 	buildObjectView(obj,type){
 		if(!Object.entries(obj).length) return;

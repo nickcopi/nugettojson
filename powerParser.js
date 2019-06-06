@@ -15,6 +15,33 @@ let readObj = (ps1,header)=>{
 	});
 	return zip;
 }
+let writeObj = (ps1,header,data)=>{
+	let ripping = false;
+	let start = 0;
+	let end = 0;
+	let split = ps1.split('\n');
+	let done = false;
+	let toWrite = split;
+	split.forEach((l,i)=>{
+		if(done) return;
+		if(l.includes(header)){
+			ripping = true;
+			start = i+1;
+			end = i;
+			return;
+		}
+		if(ripping){
+			end++;
+			if(l.trim() === '}'){
+				toWrite = [...split.slice(0,start), ...data.split('\n'), ...split.slice(end)];
+				done = true;
+				return ripping = false;
+			}
+		}
+
+	});
+	return toWrite.join('');
+}
 let readZip = (ps1)=>{
 	return readObj(ps1,'$zipArgs = @{');
 
