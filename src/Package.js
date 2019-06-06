@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
 
 export default class Package extends Component {
-	state = {code:null};
+	state = {};
 	constructor(props){
 		super(props);
 		this.buildRequest = this.buildRequest.bind(this);
 		this.fetchRequest = this.fetchRequest.bind(this);
-		this.updateRequest = this.updateRequest.bind(this);
 		this.runRequest = this.runRequest.bind(this);
-		this.updateCode = this.updateCode.bind(this);
 
 	}
 	defaultProps = {
@@ -17,7 +15,7 @@ export default class Package extends Component {
 		zipArgs:{},
 		packageArgs:{}
 	}
-	updateRequest(e){
+	updateZipArgs(e){
 		const element = e.target;
 		const code = element.parentElement.children[2].value;
 		const originalText = element.innerText;
@@ -142,14 +140,12 @@ export default class Package extends Component {
 
 	render(){
 		let {name, version, zipArgs, packageArgs} = this.props;
-		let code = this.state.code?this.state.code:'Loading...';
 		return (
 			<div className = 'package'>
-			{JSON.stringify(zipArgs,null,2)}
-			{JSON.stringify(packageArgs,null,2)}
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
-			<textarea className = 'codeView' onChange={this.updateCode} value = {code}>{code}</textarea>
+			{this.buildObjectView(zipArgs,'Zip')}
+			{this.buildObjectView(packageArgs,'Package')}
 			<div className = 'buildStatus'></div>
 			<a className = 'downloadBtn' href={`/packages/${name}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
@@ -157,34 +153,26 @@ export default class Package extends Component {
 			&nbsp;
 			<span className = 'downloadBtn' onClick = {this.fetchRequest}>Fetch</span>
 			&nbsp;
-			<span className = 'downloadBtn' onClick = {this.runRequest}>Run Script</span>
-			&nbsp;
-			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update Script</span>
+			<span className = 'downloadBtn' onClick = {this.updateRequest}>Update Package</span>
 			</div>
 		);
 	}
-	updateCode(e){
-		this.setState({code:e.target.value});
-	}
-	getCode(){
-		fetch(`/packages/${this.props.name}/${this.props.name}-updater.js`)
-			.then(res=>{
-				if(!res.status === 200){
-					this.setState({code:'Failed to load code'});
-				} else {
-					res.text().then(data=>{
-						this.setState({code:data});
-					}).catch(e=>{
-						this.setState({code:e.toString()});
-					});
-				}
-			})
-			.catch((err)=>{
-				console.log(err);
-			});
-	}
 	componentDidMount(){
-		this.getCode();
+	}
+	buildObjectView(obj,type){
+		if(!Object.entries(obj).length) return;
+		return (
+				<div>
+					<h3>{type} Arguments</h3>
+					{Object.entries(obj).map(([k,v])=>
+						(<div> {k}: <input placeholder = {k} className = 'argInput' defaultValue={v}/></div>)
+					)}
+					<br/>
+					<span className = 'downloadBtn' onClick = {this['update' + type + 'Args']}>Update {type} Args</span>
+					<br/>
+					<br/>
+				</div>
+			)
 	}
 }
 

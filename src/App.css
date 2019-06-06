@@ -55,6 +55,10 @@
 .packageList{
 	width:100%;
 }
+.argInput{
+	border: 0px;
+	background-color: #C0FADB;
+}
 .codeView{
 	margin: 0px;
 	border: 0px;
