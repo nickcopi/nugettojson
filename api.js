@@ -92,7 +92,7 @@ let writeArgs = async (name,version,args,isZip)=>{
 		}
 }
 
-let visitAll = async()=>{
+/*let visitAll = async()=>{
 	Object.entries(fullData).forEach(([k,d])=>{
 		const name = d.title;
 		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
@@ -110,6 +110,21 @@ let visitAll = async()=>{
 		}
 	});
 	fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
+}*/
+let visitPackage = async name=>{
+	const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
+	try {
+		let data = fs.readFileSync(path).toString('utf-8');
+		let line = data.split('\n').find(n=>n.toLowerCase().includes('url') && n.includes('=') && n.trim()[0] !== '$');
+		fullData[name].properties.RealPackage = !!line;
+		fullData[name].properties.ZipArgs = pp.readZip(data);
+		fullData[name].properties.PackageArgs = pp.readPackage(data);
+	} catch(e){
+		//i dont care just quit being annoying if it doesnt work lol
+		fullData[name].properties.RealPackage = false;
+		fullData[name].properties.ZipArgs = {};
+		fullData[name].properties.PackageArgs = {};
+	}
 }
 
 let buildPackage = async (name, version)=>{
@@ -312,6 +327,7 @@ let fetchPackage = async (name,version)=>{
 	let nuspec = fs.readFileSync(nuspecPath).toString('utf-8');
 	nuspec = nuspec.split('\n').filter(l=>!l.includes('<serviceable>')).join('');
 	fs.writeFileSync(nuspecPath,nuspec);
+	await visitPackage(name);
 }
 
 
@@ -331,9 +347,11 @@ let fetchAll = async force=>{
 			if(!localExists || hashDiffers){
 				console.log(`Fetching ${name} version ${version}.`);
 				await fetchPackage(name,version);
+			} else {
+				await visitPackage(name);
 			}
 		}));
-		visitAll();
+		//visitAll();
 
 	}).catch(e=>{
 		console.error(e);

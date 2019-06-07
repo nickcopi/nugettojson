@@ -3,6 +3,11 @@ import Package from './Package';
 
 export default class PackageView extends Component {
 	state = {packages:null};
+	constructor(props){
+		super(props);
+		this.updatePackages = this.updatePackages.bind(this);
+		this.callUpdatePackages = this.callUpdatePackages.bind(this);
+	}
 	render(){
 		let packages = this.state.packages;
 		let data = packages?this.loadPackages(packages):'Loading';
@@ -13,6 +18,9 @@ export default class PackageView extends Component {
 		);
 	}
 	componentDidMount(){
+		this.updatePackages();
+	}
+	callUpdatePackages(){
 		this.updatePackages();
 	}
 	updatePackages(){
@@ -29,7 +37,7 @@ export default class PackageView extends Component {
 	loadPackages=(packages)=>{
 		return packages.map(p=>(
 			<div>
-			<Package zipArgs={p.zipArgs} packageArgs={p.packageArgs} name={p.name} version = {p.version}/>
+			<Package update = {this.callUpdatePackages} zipArgs={p.zipArgs} packageArgs={p.packageArgs} name={p.name} version = {p.version}/>
 			<br/>
 			</div>
 		));

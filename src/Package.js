@@ -15,7 +15,8 @@ export default class Package extends Component {
 		name:'',
 		version:'',
 		zipArgs:{},
-		packageArgs:{}
+		packageArgs:{},
+		update:()=>{}
 	}
 	updatePackageArgs(e){
 		const element = e.target;
@@ -96,6 +97,7 @@ export default class Package extends Component {
 			if(res.success){
 				element.innerText = 'Success!';
 				setTimeout(()=>{element.innerText = originalText},500);
+				this.props.update();
 			} else {
 				element.innerText = 'Failure!';
 				setTimeout(()=>{element.innerText = originalText},500);
@@ -189,9 +191,9 @@ export default class Package extends Component {
 		);
 	}
 	componentDidMount(){
-		
 	}
 	buildObjectView(obj,type){
+		if(!obj) return console.error('Args undefined?');
 		if(!Object.entries(obj).length) return;
 		return (
 				<div>
