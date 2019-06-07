@@ -42,17 +42,32 @@ let writeObj = (ps1,header,data)=>{
 	});
 	return toWrite.join('');
 }
+
+let formatObj = (data)=>{
+	let str = "";
+	Object.entries(data).forEach(([k,v])=>{
+		str += `${k} = ${v}\r\n`;
+	});
+	return str;
+}
+
+let writeZip = async (ps1,data)=>{
+	return writeObj(ps1,'$zipArgs = @{',formatObj(data));
+}
+
+let writePackage = async (ps1,data)=>{
+	return writeObj(ps1,'$packageArgs = @{',formatObj(data));
+}
+
 let readZip = (ps1)=>{
 	return readObj(ps1,'$zipArgs = @{');
-
 }
 let readPackage = (ps1)=>{
 	return readObj(ps1,'$packageArgs = @{');
-
 }
 module.exports={
 	readZip,
-	readPackage
-
-
+	readPackage,
+	writeZip,
+	writePackage
 }

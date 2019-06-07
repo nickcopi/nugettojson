@@ -74,6 +74,25 @@ let getSheet = async()=>{
 	console.log(json);
 }
 
+let writeArgs = async (name,version,args,isZip)=>{
+		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
+		try{
+			let ps1 = fs.readFileSync(path).toString('utf-8');
+			let modified;
+			if(isZip){
+				modified = await pp.writeZip(ps1,args);
+			} else {
+				modified = await pp.writePackage(ps1,args);
+			}
+			fs.writeFileSync(path,modified);
+			fullData[name].properties[isZip?'ZipArgs':'PackageArgs'] = args;
+			fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
+			return {success:true};
+		} catch (e) {
+			return {success:false,result:e};
+		}
+}
+
 let visitAll = async()=>{
 	Object.entries(fullData).forEach(([k,d])=>{
 		const name = d.title;
@@ -339,5 +358,6 @@ module.exports = {
 	clearTestLogs,
 	clearTestQueue,
 	removeAllPackages,
-	removeQueueItem
+	removeQueueItem,
+	writeArgs
 }

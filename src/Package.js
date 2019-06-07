@@ -7,6 +7,7 @@ export default class Package extends Component {
 		this.buildRequest = this.buildRequest.bind(this);
 		this.fetchRequest = this.fetchRequest.bind(this);
 		this.runRequest = this.runRequest.bind(this);
+		this.updateZipArgs = this.updateZipArgs.bind(this);
 
 	}
 	defaultProps = {
@@ -17,10 +18,10 @@ export default class Package extends Component {
 	}
 	updateZipArgs(e){
 		const element = e.target;
-		const code = element.parentElement.children[2].value;
 		const originalText = element.innerText;
 		element.innerText = 'Updating...';
-		fetch('/updateUpdater',{
+		const data = Object.fromEntries([...element.parentNode.querySelectorAll('input')].map(m=>[m.placeholder,m.value]))
+		fetch('/writeZip',{
 			method: 'POST',
 			headers:{
 				'Content-Type': 'application/json'
@@ -28,8 +29,7 @@ export default class Package extends Component {
 			body:JSON.stringify({
 				name: this.props.name,
 				version:this.props.version,
-				code
-
+				args:data
 			})
 		}).then(res=>res.json()).then(res=>{
 			console.log(res);
@@ -158,7 +158,7 @@ export default class Package extends Component {
 		);
 	}
 	componentDidMount(){
-		//Object.fromEntries([...$0.querySelectorAll('input')].map(m=>[m.placeholder,m.value]))
+		
 	}
 	buildObjectView(obj,type){
 		if(!Object.entries(obj).length) return;

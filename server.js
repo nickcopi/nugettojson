@@ -114,10 +114,9 @@ app.post('/runUpdatePackage', async (req,res)=>{
 	}
 
 });
-app.post('/updateUpdater', async (req,res)=>{
-	
-	if(req.body.name && req.body.version && req.body.code){
-		res.send(await api.updateUpdater(req.body.name, req.body.version, req.body.code));
+app.post('/writeZip', async (req,res)=>{
+	if(req.body.name && req.body.version && req.body.args){
+		res.send(await api.writeArgs(req.body.name, req.body.version, req.body.args, true));
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}
