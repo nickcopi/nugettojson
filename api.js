@@ -233,44 +233,8 @@ let getTests = ()=>{
 	return data;
 }
 
-let updatePackage = async (name, version)=>{
-	const path = `${__dirname}/packages/${name}/`;
-	const updaterName = `${name}-updater.js`;
-	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
-	try{
-		const ps = new Shell({
-			executionPolicy: 'Bypass',
-			noProfile:true
-
-		});
-		ps.addCommand(`cd ${path}`);
-		ps.addCommand(`node ${updaterName}`);
-		const result = await ps.invoke();
-		ps.dispose();
-		return {success:true,result};
-	}catch(e){
-		return {success:false,result:e.toString()};
-		console.error(e);
-	}
-
-}
-let updateUpdater = async (name, version, code)=>{
-	const path = `${__dirname}/packages/${name}/`;
-	const updaterName = `${name}-updater.js`;
-	if(!fs.existsSync(path)) return {success:false, result:'Package does not exist locally.'};
-	fs.writeFileSync(`${path}/${updaterName}`,code)
-	// a dumb thing to assume
-	return { success: true, result: 'Updated!'};
-}
 
 
-let updateAll = async ()=>{
-	let list = listPackages();
-	return await Promise.all(list.map(async p=>{
-		const result = await updatePackage(p.name,p.version);
-		return {...p,...result};
-	}));
-}
 let buildAll = async ()=>{
 	let list = listPackages();
 	return await Promise.all(list.map(async p=>{
@@ -312,7 +276,6 @@ let fetchPackage = async (name,version)=>{
 	const zipPath = `${path}/${pkgName}.nupkg`;
 	const feed = fullData[name].feed;
 	mkdirp.sync(path);
-	fs.copyFileSync('./template.js', `${path}/${name}-updater.js`);
 	rimraf.sync(outputPath);
 	mkdirp.sync(outputPath);
 	const options = {
@@ -361,13 +324,10 @@ let fetchAll = async force=>{
 module.exports = {
 	fetchAll,
 	fetchPackage,
-	updatePackage,
 	forceFetchPackage,
 	listPackages,
 	buildPackage,
-	updateAll,
 	buildAll,
-	updateUpdater,
 	getTestQueue,
 	receiveAgentReport,
 	callDibs,

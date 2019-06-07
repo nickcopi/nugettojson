@@ -8,7 +8,6 @@ let startSchedule = ()=>{
 		const output = [];
 		console.log('Starting scheduled package job.');
 		await api.fetchAll();
-		output.push(await api.updateAll());
 		output.push(await api.buildAll());
 		fs.writeFileSync('schedule.log',JSON.stringify(output,null,2));
 		console.log('Finished scheduled package job.');
