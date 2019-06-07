@@ -122,6 +122,14 @@ app.post('/writeZip', async (req,res)=>{
 	}
 
 });
+app.post('/writePackage', async (req,res)=>{
+	if(req.body.name && req.body.version && req.body.args){
+		res.send(await api.writeArgs(req.body.name, req.body.version, req.body.args, false));
+	} else {
+		res.send({success:false,result:'Invalid request'});
+	}
+
+});
 app.post('/fetchPackage', async (req,res)=>{
 	
 	if(req.body.name && req.body.version){
