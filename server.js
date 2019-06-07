@@ -140,8 +140,11 @@ app.post('/fetchPackage', async (req,res)=>{
 
 });
 
-api.fetchAll();
-packageSchedule();
-app.listen(PORT,'0.0.0.0',()=>{
-	console.error(`Listening on port ${PORT}.`);
-});
+let init = async ()=>{
+	await api.fetchAll();
+	packageSchedule();
+	app.listen(PORT,'0.0.0.0',()=>{
+		console.error(`Listening on port ${PORT}.`);
+	});
+}
+init();

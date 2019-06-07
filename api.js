@@ -86,7 +86,6 @@ let writeArgs = async (name,version,args,isZip)=>{
 			}
 			fs.writeFileSync(path,modified);
 			fullData[name].properties[isZip?'ZipArgs':'PackageArgs'] = args;
-			fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
 			return {success:true};
 		} catch (e) {
 			return {success:false,result:e};
@@ -317,12 +316,12 @@ let fetchPackage = async (name,version)=>{
 
 
 
-let fetchAll = force=>{ 
-	getData().then(res=>{
+let fetchAll = async force=>{ 
+	await getData().then(async res=>{
 		let newData = res.newData;
 		let oldData = res.oldData;
 		//console.log(res.map(r=>r.title).filter((r,i,arr)=>arr.indexOf(r) === i));
-		Object.entries(newData).forEach(([k,d])=>{
+		await Promise.all(Object.entries(newData).map(async ([k,d])=>{
 			const name = d.title;
 			const version = d.properties.Version
 			const path = `packages/${name}`;
@@ -331,9 +330,9 @@ let fetchAll = force=>{
 			let hashDiffers = !oldVersion || oldVersion.properties.PackageHash !== d.properties.PackageHash || force;
 			if(!localExists || hashDiffers){
 				console.log(`Fetching ${name} version ${version}.`);
-				fetchPackage(name,version);
+				await fetchPackage(name,version);
 			}
-		});
+		}));
 		visitAll();
 
 	}).catch(e=>{

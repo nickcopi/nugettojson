@@ -2,6 +2,7 @@
 let readObj = (ps1,header)=>{
 	let ripping = false;
 	let zip = {};
+	debugger;
 	ps1.split('\n').forEach(l=>{
 		if(l.includes(header)) return ripping = true;
 		if(ripping){
@@ -40,7 +41,7 @@ let writeObj = (ps1,header,data)=>{
 		}
 
 	});
-	return toWrite.join('');
+	return toWrite.join('\n');
 }
 
 let formatObj = (data)=>{
@@ -48,7 +49,7 @@ let formatObj = (data)=>{
 	Object.entries(data).forEach(([k,v])=>{
 		str += `${k} = ${v}\r\n`;
 	});
-	return str;
+	return str.substring(0,str.length-1);
 }
 
 let writeZip = async (ps1,data)=>{
