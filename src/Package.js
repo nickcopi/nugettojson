@@ -172,13 +172,14 @@ export default class Package extends Component {
 
 
 	render(){
-		let {name, version, zipArgs, packageArgs} = this.props;
+		let {name, version, zipArgs, packageArgs, nuspec} = this.props;
 		return (
 			<div className = 'package'>
 			<div className = 'nameHeader'>{name}</div>
 			<div className = 'versionHeader'>Version: {version} </div>
 			{this.buildObjectView(zipArgs,'Zip')}
 			{this.buildObjectView(packageArgs,'Package')}
+			{this.buildObjectView(nuspec,'Nuspec')}
 			<div className = 'buildStatus'></div>
 			<a className = 'downloadBtn' href={`/packages/${name}/${name}.${version}.nupkg`}>Download</a>
 			&nbsp;
@@ -199,7 +200,7 @@ export default class Package extends Component {
 				<div>
 					<h3>{type} Arguments</h3>
 					{Object.entries(obj).map(([k,v])=>
-						(<div> {k}: <input placeholder = {k} className = 'argInput' defaultValue={v}/></div>)
+						(<div> {k}: <input placeholder = {k} className = 'argInput' defaultValue={typeof(v) === "object"?JSON.stringify(v):v}/></div>)
 					)}
 					<br/>
 					<span className = 'downloadBtn' onClick = {this['update' + type + 'Args']}>Update {type} Args</span>

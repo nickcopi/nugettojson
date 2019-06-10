@@ -37,7 +37,7 @@ export default class PackageView extends Component {
 	loadPackages=(packages)=>{
 		return packages.map(p=>(
 			<div>
-			<Package update = {this.callUpdatePackages} zipArgs={p.zipArgs} packageArgs={p.packageArgs} name={p.name} version = {p.version}/>
+			<Package update = {this.callUpdatePackages} nuspec={p.nuspecMetadata} zipArgs={p.zipArgs} packageArgs={p.packageArgs} name={p.name} version = {p.version}/>
 			<br/>
 			</div>
 		));

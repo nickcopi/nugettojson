@@ -1,4 +1,5 @@
-
+const parser = require('fast-xml-parser');
+/*ps1 stuff*/
 let readObj = (ps1,header)=>{
 	let ripping = false;
 	let zip = {};
@@ -66,9 +67,21 @@ let readZip = (ps1)=>{
 let readPackage = (ps1)=>{
 	return readObj(ps1,'$packageArgs = @{');
 }
+/*nuspec stuff*/
+let readNuspec = nuspec=>{
+	let parsed = parser.parse(nuspec);
+	Object.entries(parsed.package.metadata).forEach(([k,v])=>{
+		if(typeof(v) === 'object'){
+			delete parsed.package.metadata[k];
+		}
+	});
+	return parsed.package.metadata;
+}
+
 module.exports={
 	readZip,
 	readPackage,
 	writeZip,
-	writePackage
+	writePackage,
+	readNuspec
 }

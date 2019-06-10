@@ -113,17 +113,22 @@ let writeArgs = async (name,version,args,isZip)=>{
 }*/
 let visitPackage = async name=>{
 	const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
+	const nuspecPath = `${__dirname}/packages/${name}/output/${name}.nuspec`;
 	try {
 		let data = fs.readFileSync(path).toString('utf-8');
+		let nuspec = fs.readFileSync(nuspecPath).toString('utf-8');
 		let line = data.split('\n').find(n=>n.toLowerCase().includes('url') && n.includes('=') && n.trim()[0] !== '$');
 		fullData[name].properties.RealPackage = !!line;
 		fullData[name].properties.ZipArgs = pp.readZip(data);
 		fullData[name].properties.PackageArgs = pp.readPackage(data);
+		fullData[name].properties.NuspecMetadata = pp.readNuspec(nuspec);
 	} catch(e){
+		console.error(e);
 		//i dont care just quit being annoying if it doesnt work lol
 		fullData[name].properties.RealPackage = false;
 		fullData[name].properties.ZipArgs = {};
 		fullData[name].properties.PackageArgs = {};
+		fullData[name].properties.NuspecMetadata = {};
 	}
 }
 
@@ -254,6 +259,7 @@ let listPackages = (extraInfo)=>{
 		if(extraInfo){ 
 			packageInfo.zipArgs = d.properties.ZipArgs;
 			packageInfo.packageArgs = d.properties.PackageArgs;
+			packageInfo.nuspecMetadata = d.properties.NuspecMetadata;
 		}
 		newList.push(packageInfo);
 	});
