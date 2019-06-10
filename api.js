@@ -74,6 +74,20 @@ let getSheet = async()=>{
 	console.log(json);
 }
 
+let writeNuspec = async (name,version,args)=>{
+		const path = `${__dirname}/packages/${name}/output/${name}.nuspec`;
+		try{
+			let nuspec = fs.readFileSync(path).toString('utf-8');
+			let modified;
+			modified = await pp.writeNuspec(nuspec,args);
+			fs.writeFileSync(path,modified);
+			fullData[name].properties.NuspecMetadata = args;
+			return {success:true};
+		} catch (e) {
+			return {success:false,result:e};
+		}
+}
+
 let writeArgs = async (name,version,args,isZip)=>{
 		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
 		try{
@@ -342,5 +356,6 @@ module.exports = {
 	clearTestQueue,
 	removeAllPackages,
 	removeQueueItem,
-	writeArgs
+	writeArgs,
+	writeNuspec
 }

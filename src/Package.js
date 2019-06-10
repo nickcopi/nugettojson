@@ -9,6 +9,7 @@ export default class Package extends Component {
 		this.runRequest = this.runRequest.bind(this);
 		this.updateZipArgs = this.updateZipArgs.bind(this);
 		this.updatePackageArgs = this.updatePackageArgs.bind(this);
+		this.updateNuspecArgs = this.updateNuspecArgs.bind(this);
 
 	}
 	defaultProps = {
@@ -24,6 +25,36 @@ export default class Package extends Component {
 		element.innerText = 'Updating...';
 		const data = Object.fromEntries([...element.parentNode.querySelectorAll('input')].map(m=>[m.placeholder,m.value]))
 		fetch('/writePackage',{
+			method: 'POST',
+			headers:{
+				'Content-Type': 'application/json'
+			},
+			body:JSON.stringify({
+				name: this.props.name,
+				version:this.props.version,
+				args:data
+			})
+		}).then(res=>res.json()).then(res=>{
+			console.log(res);
+			if(res.success){
+				element.innerText = 'Success!';
+				setTimeout(()=>{element.innerText = originalText},500);
+			} else {
+				element.innerText = 'Failure!';
+				setTimeout(()=>{element.innerText = originalText},500);
+			}
+		}).catch(e=>{
+			element.innerText = originalText;
+			console.error(e)
+		});
+
+	}
+	updateNuspecArgs(e){
+		const element = e.target;
+		const originalText = element.innerText;
+		element.innerText = 'Updating...';
+		const data = Object.fromEntries([...element.parentNode.querySelectorAll('input')].map(m=>[m.placeholder,m.value]))
+		fetch('/writeNuspec',{
 			method: 'POST',
 			headers:{
 				'Content-Type': 'application/json'

@@ -113,13 +113,19 @@ app.post('/runUpdatePackage', async (req,res)=>{
 	}
 
 });
+app.post('/writeNuspec', async (req,res)=>{
+	if(req.body.name && req.body.version && req.body.args){
+		res.send(await api.writeNuspec(req.body.name, req.body.version, req.body.args));
+	} else {
+		res.send({success:false,result:'Invalid request'});
+	}
+});
 app.post('/writeZip', async (req,res)=>{
 	if(req.body.name && req.body.version && req.body.args){
 		res.send(await api.writeArgs(req.body.name, req.body.version, req.body.args, true));
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}
-
 });
 app.post('/writePackage', async (req,res)=>{
 	if(req.body.name && req.body.version && req.body.args){
@@ -127,7 +133,6 @@ app.post('/writePackage', async (req,res)=>{
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}
-
 });
 app.post('/fetchPackage', async (req,res)=>{
 	

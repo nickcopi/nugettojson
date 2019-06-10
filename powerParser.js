@@ -78,10 +78,55 @@ let readNuspec = nuspec=>{
 	return parsed.package.metadata;
 }
 
+let writeNuspec = (nuspec,args)=>{
+	//console.log(xmlify(args));
+	let toAdd = xmlify(args);
+	let parsed = parser.parse(nuspec).package.metadata;
+	Object.entries(parsed).forEach(([k,v])=>{
+		if(typeof(v) !== 'object'){
+			delete parsed[k];
+		}
+	});
+	let newSplit = [];
+	let ripping = false;
+	let split = nuspec.split('\r');
+	let currentWhite;
+	split.forEach(l=>{
+		newSplit.push(l);
+		if(l.includes('<metadata>')) return ripping = true;	
+		if(l.includes('</metadata>')) {
+			ripping = false;	
+			newSplit.pop();
+			newSplit = newSplit.concat(toAdd);
+			newSplit.push(l);
+		}
+		if(ripping){
+			if(currentWhite){
+				if(l.includes(`</${currentWhite}>`)) currentWhite = null;
+				return;	
+			}
+			let found = false;
+			Object.keys(parsed).forEach(m=>{
+				if(found) return;
+				found = l.includes(`<${m}>`)?m:null;
+			});
+			if(!found) newSplit.pop();
+			else {
+				if(!l.includes(`</${found}>`)) currentWhite = found;
+			}
+		}
+	});
+	return newSplit.join('\r');
+	
+}
+
+let xmlify = obj => Object.entries(obj).map(([k,v])=>`<${k}>${v}</${k}>`);
+
 module.exports={
 	readZip,
 	readPackage,
 	writeZip,
 	writePackage,
-	readNuspec
+	readNuspec,
+	writeNuspec
 }
