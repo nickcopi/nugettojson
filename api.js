@@ -71,7 +71,7 @@ let removeAllPackages = ()=>{
 let getSheet = async()=>{
 	let data = await request(config.googleSheet);
 	let json = await csv().fromString(data);
-	console.log(json);
+	return json;
 }
 
 let writeNuspec = async (name,version,args)=>{
@@ -262,6 +262,13 @@ let buildAll = async ()=>{
 	}));
 }
 
+let updateAll = async()=>{
+	let sheet = await getSheet();
+	//use sheet data to update the things and then force writes to disk
+
+
+}
+
 let listPackages = (extraInfo)=>{
 	let newList = [];
 	Object.entries(fullData).forEach(([k,d])=>{
@@ -357,5 +364,6 @@ module.exports = {
 	removeAllPackages,
 	removeQueueItem,
 	writeArgs,
-	writeNuspec
+	writeNuspec,
+	updateAll
 }

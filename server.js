@@ -42,8 +42,10 @@ app.post('/agentDibs',(req,res)=>{
 
 app.post('/updateAll', async (req,res)=>{
 	try{
+		api.updateAll();
 		return res.send({attempted:true});
 	} catch(e){
+		console.log(e);
 		return res.send({attempted:false});
 	}
 });
