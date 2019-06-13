@@ -97,19 +97,20 @@ app.post('/removeAllPackages', async (req,res)=>{
 	}
 });
 
-app.post('/buildPackage', async (req,res)=>{
+app.post('/updatePackage', async (req,res)=>{
 	
-	if(req.body.name && req.body.version){
-		res.send(await api.buildPackage(req.body.name, req.body.version));
+	if(req.body.name){
+		res.send(await api.updatePackage(req.body.name, true));
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}
 
 });
-app.post('/runUpdatePackage', async (req,res)=>{
+
+app.post('/buildPackage', async (req,res)=>{
 	
 	if(req.body.name && req.body.version){
-		res.send(await api.updatePackage(req.body.name, req.body.version));
+		res.send(await api.buildPackage(req.body.name, req.body.version));
 	} else {
 		res.send({success:false,result:'Invalid request'});
 	}
@@ -148,6 +149,7 @@ app.post('/fetchPackage', async (req,res)=>{
 
 let init = async ()=>{
 	await api.fetchAll();
+	await api.getSheet();
 	packageSchedule();
 	app.listen(PORT,'0.0.0.0',()=>{
 		console.error(`Listening on port ${PORT}.`);

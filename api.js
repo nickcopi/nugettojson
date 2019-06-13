@@ -20,6 +20,7 @@ const config = require('./config.json');
 const pp = require('./powerParser');
 
 let fullData = {};
+let sheet = {};
 const feeds = config.feeds;
 
 let getData = async () =>{
@@ -71,7 +72,8 @@ let removeAllPackages = ()=>{
 let getSheet = async()=>{
 	let data = await request(config.googleSheet);
 	let json = await csv().fromString(data);
-	return json;
+	sheet = json;
+	console.log(sheet);
 }
 
 let writeNuspec = async (name,version,args)=>{
@@ -146,6 +148,13 @@ let visitPackage = async name=>{
 	}
 }
 
+let updatePackage = async (name,update)=>{
+	if(!fullData[name]) return {success:false, result:'Package does not exist locally.'};
+	if(update) await getSheet();
+	//do stuff with sheet[name] to fullData[name] and then use writeArgs() and writeNuget() for turbo
+	return {success:true};
+	
+}
 let buildPackage = async (name, version)=>{
 	const path = `${__dirname}/packages/${name}/output`;
 	const oldPackagePath = `${__dirname}/packages/${name}/${name}.${version}.nupkg`;
@@ -263,10 +272,10 @@ let buildAll = async ()=>{
 }
 
 let updateAll = async()=>{
-	let sheet = await getSheet();
-	//use sheet data to update the things and then force writes to disk
-
-
+	await getSheet();
+	Object.entries(fullData).forEach(([k,d])=>{
+		updatePackage(k,false);
+	});
 }
 
 let listPackages = (extraInfo)=>{
@@ -341,7 +350,6 @@ let fetchAll = async force=>{
 				await visitPackage(name);
 			}
 		}));
-		//visitAll();
 
 	}).catch(e=>{
 		console.error(e);
@@ -365,5 +373,7 @@ module.exports = {
 	removeQueueItem,
 	writeArgs,
 	writeNuspec,
-	updateAll
+	updateAll,
+	updatePackage,
+	getSheet
 }
