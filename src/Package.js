@@ -253,7 +253,7 @@ export default class Package extends Component {
 	componentDidMount(){
 	}
 	buildObjectView(obj,type){
-		if(!obj) return console.error('Args undefined?');
+		if(!obj) return console.error(this.props.name + ': Args undefined?');
 		if(!Object.entries(obj).length) return;
 		return (
 				<div>

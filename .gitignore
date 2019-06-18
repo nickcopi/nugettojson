@@ -6,4 +6,5 @@ testQueue.json
 schedule.log
 build
 testLogs.json
+buildLog.json
 *.swp

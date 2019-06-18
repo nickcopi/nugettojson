@@ -73,7 +73,6 @@ let getSheet = async()=>{
 	let data = await request(config.googleSheet);
 	let json = await csv().fromString(data);
 	sheet = json;
-	console.log(sheet);
 }
 
 let writeNuspec = async (name,version,args)=>{
@@ -108,25 +107,6 @@ let writeArgs = async (name,version,args,isZip)=>{
 		}
 }
 
-/*let visitAll = async()=>{
-	Object.entries(fullData).forEach(([k,d])=>{
-		const name = d.title;
-		const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
-		try {
-			let data = fs.readFileSync(path).toString('utf-8');
-			let line = data.split('\n').find(n=>n.toLowerCase().includes('url') && n.includes('=') && n.trim()[0] !== '$');
-			fullData[k].properties.RealPackage = !!line;
-			fullData[k].properties.ZipArgs = pp.readZip(data);
-			fullData[k].properties.PackageArgs = pp.readPackage(data);
-		} catch(e){
-			//i dont care just quit being annoying if it doesnt work lol
-			fullData[k].properties.RealPackage = false;
-			fullData[k].properties.ZipArgs = {};
-			fullData[k].properties.PackageArgs = {};
-		}
-	});
-	fs.writeFileSync('output.json',JSON.stringify(fullData,null,2));
-}*/
 let visitPackage = async name=>{
 	const path = `${__dirname}/packages/${name}/output/tools/chocolateyInstall.ps1`;
 	const nuspecPath = `${__dirname}/packages/${name}/output/${name}.nuspec`;
@@ -163,7 +143,6 @@ let buildPackage = async (name, version)=>{
 		const ps = new Shell({
 			executionPolicy: 'Bypass',
 			noProfile:true
-
 		});
 		ps.addCommand(`cd ${path}`);
 		ps.addCommand('choco pack');
@@ -174,11 +153,22 @@ let buildPackage = async (name, version)=>{
 		const success = fs.existsSync(oldPackagePath);
 		if(!success && fs.existsSync(oldPackagePath + '.old')) fs.renameSync(oldPackagePath + '.old', oldPackagePath);
 		if(success) addPackageToTestQueue(name,version);
+		buildLog = getBuildLog();
+		buildLog.push({name,success,result});
+		fs.writeFileSync('buildLog.json',JSON.stringify(buildLog,null,2));
 		return {success,result};
 	}catch(e){
+		buildLog = getBuildLog();
+		buildLog.push({name,success:false,result:e.toString()});
+		fs.writeFileSync('buildLog.json',JSON.stringify(buildLog,null,2));
 		return {success:false,result:e.toString()};
-		console.error(e);
 	}
+}
+
+let getBuildLog = ()=>{
+	if(fs.existsSync('buildLog.json'))
+		return JSON.parse(fs.readFileSync('buildLog.json').toString('utf-8'));
+	return [];
 }
 
 /*Gross race condition causing code (beware)*/
