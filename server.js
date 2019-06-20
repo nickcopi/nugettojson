@@ -26,6 +26,19 @@ app.get('/getBuildLog', (req,res)=>{
 	res.send(api.getBuildLog());
 });
 
+
+app.get('/buildCSV', (req,res)=>{
+	res.setHeader('Content-disposition', `attachment; filename=build_report_${new Date().toString()}.csv`);
+	res.set('Content-Type','application/octet-stream');
+	res.send(api.getBuildCSV());
+});
+
+app.get('/testsCSV', (req,res)=>{
+	res.setHeader('Content-disposition', `attachment; filename=tests_report_${new Date().toString()}.csv`);
+	res.set('Content-Type','application/octet-stream');
+	res.send(api.getTestsCSV());
+});
+
 app.post('/agentReport',(req,res)=>{
 	if(req.body.name && req.body.result && req.body.hostname){
 		api.receiveAgentReport(req.body.name,req.body.success,req.body.error,req.body.result,req.body.hostname);

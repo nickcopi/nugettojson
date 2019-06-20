@@ -13,7 +13,7 @@ export default class MenuBar extends Component {
 				<MenuItem url = '/builds' text = "Build Log"></MenuItem>
 				<MenuItem url = '/tests' text = "Test Log"></MenuItem>
 				<MenuItem url = '/queue' text = "Test Queue"></MenuItem>
-				<MenuItem url = '/danger' text = "Danger Zone"></MenuItem>
+				<MenuItem url = '/danger' text = "Settings"></MenuItem>
 			</div>
 		);
 	}

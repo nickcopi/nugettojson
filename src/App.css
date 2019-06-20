@@ -109,6 +109,10 @@
 	background-color: #ade0c5;
 	position:fixed;
 }
+.chillAnchor{
+	text-decoration:none;
+	color:inherit;
+}
 div{
 	width:100%;
 }

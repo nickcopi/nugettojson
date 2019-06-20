@@ -58,6 +58,31 @@ let getData = async () =>{
 
 }
 
+let getBuildCSV = ()=>{
+	let csv = '';
+	let log = getBuildLog()
+	if(log.length > 1){
+		csv += Object.keys(log[0]).toString() + '\n';
+	}
+	log.forEach(entry=>{
+		entry.result = '"' + entry.result.split('"').join('\"') + '"';
+		csv += Object.values(entry).toString()+ '\n';
+	});
+	return csv;
+}
+let getTestsCSV = ()=>{
+	let csv = '';
+	let log = getTests()
+	if(log.length > 1){
+		csv += Object.keys(log[0]).toString() + '\n';
+	}
+	log.forEach(entry=>{
+		entry.result = '"' + entry.result.split('"').join('\"') + '"';
+		csv += Object.values(entry).toString()+ '\n';
+	});
+	return csv;
+}
+
 let clearBuildLogs = ()=>{
 	fs.writeFileSync('buildLog.json','[]');
 }
@@ -370,5 +395,7 @@ module.exports = {
 	updateAll,
 	updatePackage,
 	getSheet,
-	getBuildLog
+	getBuildLog,
+	getBuildCSV,
+	getTestsCSV
 }
