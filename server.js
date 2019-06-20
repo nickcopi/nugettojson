@@ -20,7 +20,10 @@ app.get('/getTestQueue', (req,res)=>{
 });
 app.get('/getTests', (req,res)=>{
 	res.send(api.getTests());
+});
 
+app.get('/getBuildLog', (req,res)=>{
+	res.send(api.getBuildLog());
 });
 
 app.post('/agentReport',(req,res)=>{
@@ -60,6 +63,14 @@ app.post('/buildAll', async (req,res)=>{
 app.post('/fetchAll', async (req,res)=>{
 	try{
 		api.fetchAll(true);
+		return res.send({attempted:true});
+	} catch(e){
+		return res.send({attempted:false});
+	}
+});
+app.post('/clearBuildLogs', async (req,res)=>{
+	try{
+		api.clearBuildLogs();
 		return res.send({attempted:true});
 	} catch(e){
 		return res.send({attempted:false});

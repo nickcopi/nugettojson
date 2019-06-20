@@ -17,6 +17,7 @@ export default class Buttons extends Component {
 				<span path='/fetchAll' onClick={this.fetchPath} className = 'testBar centerBar'>Force Fetch All Packages</span>	
 				<span path='/updateAll' onClick={this.fetchPath} className = 'testBar centerBar'>Run Update All Packages</span>	
 				<span path='/buildAll' onClick={this.fetchPath} className = 'testBar centerBar'>Build All Packages</span>	
+				<span path='/clearBuildLogs' onClick={this.fetchPath} className = 'testBar centerBar'>Clear All Build Logs</span>	
 				<span path='/clearTestLogs' onClick={this.fetchPath} className = 'testBar centerBar'>Clear All Test Logs</span>	
 				<span path='/clearTestQueue' onClick={this.fetchPath} className = 'testBar centerBar'>Empty Test Queue</span>	
 				<span path='/removeAllPackages' onClick={this.fetchPath }className = 'testBar centerBar'>Delete All Local Packages</span>	

@@ -58,6 +58,9 @@ let getData = async () =>{
 
 }
 
+let clearBuildLogs = ()=>{
+	fs.writeFileSync('buildLog.json','[]');
+}
 let clearTestLogs = ()=>{
 	fs.writeFileSync('testLogs.json','[]');
 }
@@ -154,7 +157,7 @@ let buildPackage = async (name, version)=>{
 		if(!success && fs.existsSync(oldPackagePath + '.old')) fs.renameSync(oldPackagePath + '.old', oldPackagePath);
 		if(success) addPackageToTestQueue(name,version);
 		buildLog = getBuildLog();
-		buildLog.push({name,success,result});
+		buildLog.push({date:new Date().toString(),name,success,result});
 		fs.writeFileSync('buildLog.json',JSON.stringify(buildLog,null,2));
 		return {success,result};
 	}catch(e){
@@ -357,6 +360,7 @@ module.exports = {
 	receiveAgentReport,
 	callDibs,
 	getTests,
+	clearBuildLogs,
 	clearTestLogs,
 	clearTestQueue,
 	removeAllPackages,
@@ -365,5 +369,6 @@ module.exports = {
 	writeNuspec,
 	updateAll,
 	updatePackage,
-	getSheet
+	getSheet,
+	getBuildLog
 }
