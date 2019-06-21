@@ -65,7 +65,7 @@ let getBuildCSV = ()=>{
 		csv += Object.keys(log[0]).toString() + '\n';
 	}
 	log.forEach(entry=>{
-		entry.result = '"' + entry.result.split('"').join('\"') + '"';
+		entry.result = '"' + entry.result.split('"').join('\"').split('\n').join('').split('\r').join('') + '"';
 		csv += Object.values(entry).toString()+ '\n';
 	});
 	return csv;
@@ -77,7 +77,7 @@ let getTestsCSV = ()=>{
 		csv += Object.keys(log[0]).toString() + '\n';
 	}
 	log.forEach(entry=>{
-		entry.result = '"' + entry.result.split('"').join('\"') + '"';
+		entry.result = '"' + entry.result.split('"').join('\"').split('\n').join('').split('\r').join('') + '"';
 		csv += Object.values(entry).toString()+ '\n';
 	});
 	return csv;
