@@ -19,7 +19,6 @@ export default class Buttons extends Component {
 				<a target = '_blank' className = 'testBar centerBar chillAnchor' href='/testsCSV'>Download Tests Report</a>
 				<span className = "testHeader" style={{'justify-content':'center'}}>Danger Zone</span>
 				<span path='/fetchAll' onClick={this.fetchPath} className = 'testBar centerBar'>Force Fetch All Packages</span>	
-				<span path='/fetchAll' onClick={this.fetchPath} className = 'testBar centerBar'>Force Fetch All Packages</span>	
 				<span path='/updateAll' onClick={this.fetchPath} className = 'testBar centerBar'>Run Update All Packages</span>	
 				<span path='/buildAll' onClick={this.fetchPath} className = 'testBar centerBar'>Build All Packages</span>	
 				<span path='/clearBuildLogs' onClick={this.fetchPath} className = 'testBar centerBar'>Clear All Build Logs</span>	
